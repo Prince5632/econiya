@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getNavMenu, type NavItem } from '@/lib/navigation';
+import { getHeaderMenu, type NavItem } from '@/lib/navigation';
 import { getSiteSettings } from '@/lib/settings';
 import HeaderShell from './HeaderShell';
 import HeaderMobileToggle from './HeaderMobileToggle';
@@ -80,12 +80,10 @@ function NavItemDesktop({ item }: { item: NavItem }) {
 /* ── Header (Server Component) ──────────────────────────────────────────── */
 
 export default async function Header() {
-    const [menu, settings] = await Promise.all([
-        getNavMenu('header'),
+    const [items, settings] = await Promise.all([
+        getHeaderMenu(),
         getSiteSettings(),
     ]);
-
-    const items = menu?.items ?? [];
 
     return (
         <HeaderShell>

@@ -7,6 +7,10 @@ import {
     HiOutlineEyeSlash,
     HiOutlineArrowUpTray,
     HiOutlineArrowPath,
+    HiOutlinePlus,
+    HiOutlineTrash,
+    HiOutlineChevronUp,
+    HiOutlineChevronDown,
     HiOutlineDevicePhoneMobile,
     HiOutlineDeviceTablet,
     HiOutlineComputerDesktop,
@@ -41,12 +45,13 @@ interface PageForm {
     htmlContent: string;
     cssContent: string;
     jsContent: string;
-    pageType: 'custom_code';
+    pageType: 'custom_code' | 'template';
     status: PageStatus;
     metaTitle: string;
     metaDescription: string;
     metaKeywords: string;
     ogImage: string;
+    template: { sections: { id: string; type: string }[] };
 }
 
 const TAB_META = {
@@ -267,6 +272,7 @@ export default function PageEditorPage() {
         metaDescription: '',
         metaKeywords: '',
         ogImage: '',
+        template: { sections: [] },
     });
 
     // ── Debounce code content for preview (600ms) ────────────────────────
@@ -321,12 +327,13 @@ export default function PageEditorPage() {
                         htmlContent: data.htmlContent || '',
                         cssContent: data.cssContent || '',
                         jsContent: data.jsContent || '',
-                        pageType: 'custom_code',
+                        pageType: data.pageType || 'custom_code',
                         status: data.status || (data.isPublished ? 'PUBLISHED' : 'DRAFT'),
                         metaTitle: data.metaTitle || '',
                         metaDescription: data.metaDescription || '',
                         metaKeywords: data.metaKeywords || '',
                         ogImage: data.ogImage || '',
+                        template: data.template || { sections: [] },
                     });
                     setLoading(false);
                 });
@@ -436,8 +443,8 @@ export default function PageEditorPage() {
                     onClick={() => setViewport(s)}
                     title={s.charAt(0).toUpperCase() + s.slice(1)}
                     className={`rounded-md p-2 transition-colors ${viewport === s
-                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
-                            : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+                        ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
+                        : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
                         }`}
                 >
                     <I className="h-4 w-4" />
@@ -453,8 +460,8 @@ export default function PageEditorPage() {
                 type="button"
                 onClick={() => setPreviewMode('preview')}
                 className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${previewMode === 'preview'
-                        ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
-                        : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400'
+                    ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
+                    : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400'
                     }`}
             >
                 <HiOutlineEye className="h-3.5 w-3.5" />
@@ -464,8 +471,8 @@ export default function PageEditorPage() {
                 type="button"
                 onClick={() => setPreviewMode('visual-edit')}
                 className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${previewMode === 'visual-edit'
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400'
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400'
                     }`}
             >
                 <HiOutlinePencilSquare className="h-3.5 w-3.5" />
@@ -560,8 +567,8 @@ export default function PageEditorPage() {
                     type="button"
                     onClick={() => updateField('status', form.status === 'PUBLISHED' ? 'DRAFT' : 'PUBLISHED')}
                     className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${form.status === 'PUBLISHED'
-                            ? 'bg-green-50 text-green-700 ring-1 ring-green-200 hover:bg-green-100 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
-                            : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20'
+                        ? 'bg-green-50 text-green-700 ring-1 ring-green-200 hover:bg-green-100 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
+                        : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20'
                         }`}
                 >
                     <span className={`h-2 w-2 rounded-full ${form.status === 'PUBLISHED' ? 'bg-green-500' : 'bg-amber-500'}`} />
@@ -628,8 +635,45 @@ export default function PageEditorPage() {
                     </div>
                 </div>
 
-                {/* ── Editor + Preview ──────────────────────────────────── */}
-                <div
+                {/* ── Page Type Toggle ──────────────────────────────────── */}
+                {!isEditing && (
+                    <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Page Type:</span>
+                        <div className="flex rounded-xl bg-zinc-100 p-1 dark:bg-zinc-800">
+                            <button
+                                type="button"
+                                onClick={() => updateField('pageType', 'custom_code')}
+                                className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${form.pageType === 'custom_code'
+                                    ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
+                                    : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400'
+                                    }`}
+                            >
+                                🌐 Custom Code
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => updateField('pageType', 'template')}
+                                className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${form.pageType === 'template'
+                                    ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
+                                    : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400'
+                                    }`}
+                            >
+                                🧩 Template
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── Template Section Builder (shown when pageType is template) ── */}
+                {form.pageType === 'template' && (
+                    <TemplateSectionBuilder
+                        sections={form.template.sections}
+                        onChange={(sections) => setForm(prev => ({ ...prev, template: { sections } }))}
+                    />
+                )}
+
+                {/* ── Editor + Preview (shown when pageType is custom_code) ──── */}
+                {form.pageType === 'custom_code' && <div
                     onDrop={handleDrop}
                     onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                     onDragLeave={() => setDragOver(false)}
@@ -658,8 +702,8 @@ export default function PageEditorPage() {
                                     onClick={() => setActiveTab(tab)}
                                     title={TAB_META[tab].hint}
                                     className={`relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wide transition-all ${activeTab === tab
-                                            ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-white'
-                                            : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+                                        ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-white'
+                                        : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
                                         }`}
                                 >
                                     <span>{TAB_META[tab].icon}</span>
@@ -768,7 +812,7 @@ export default function PageEditorPage() {
                             </div>
                         )}
                     </div>
-                </div>
+                </div>}
 
                 {/* ── SEO Fields ──────────────────────────────────────── */}
                 <SeoFields
@@ -803,6 +847,148 @@ export default function PageEditorPage() {
                     </div>
                 </div>
             </form>
+        </div>
+    );
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Template Section Builder sub-component
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+import { TEMPLATE_SECTIONS, generateSectionId } from '@/lib/templates';
+import type { TemplateSectionConfig } from '@/lib/templates';
+
+function TemplateSectionBuilder({
+    sections,
+    onChange,
+}: {
+    sections: TemplateSectionConfig[];
+    onChange: (sections: TemplateSectionConfig[]) => void;
+}) {
+    const addSection = (type: string) => {
+        onChange([...sections, { id: generateSectionId(), type }]);
+    };
+
+    const removeSection = (id: string) => {
+        onChange(sections.filter(s => s.id !== id));
+    };
+
+    const moveSection = (index: number, direction: 'up' | 'down') => {
+        const newSections = [...sections];
+        const target = direction === 'up' ? index - 1 : index + 1;
+        if (target < 0 || target >= newSections.length) return;
+        [newSections[index], newSections[target]] = [newSections[target], newSections[index]];
+        onChange(newSections);
+    };
+
+    // Sections already added
+    const usedTypes = new Set(sections.map(s => s.type));
+    // Sections available to add
+    const availableSections = TEMPLATE_SECTIONS.filter(s => !usedTypes.has(s.type));
+
+    return (
+        <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
+            {/* Left: Current sections list */}
+            <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">
+                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-white">Page Sections</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">Drag to reorder, click ✕ to remove</p>
+                </div>
+                {sections.length === 0 ? (
+                    <div className="px-5 py-12 text-center">
+                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800">
+                            <span className="text-2xl">🧩</span>
+                        </div>
+                        <p className="text-sm font-medium text-zinc-500">No sections added yet</p>
+                        <p className="text-xs text-zinc-400 mt-1">Pick sections from the right panel to build your page</p>
+                    </div>
+                ) : (
+                    <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                        {sections.map((section, index) => {
+                            const meta = TEMPLATE_SECTIONS.find(s => s.type === section.type);
+                            return (
+                                <div
+                                    key={section.id}
+                                    className="flex items-center gap-3 px-5 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+                                >
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100 text-base dark:bg-zinc-800">
+                                        {meta?.icon || '📄'}
+                                    </span>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-zinc-900 dark:text-white">{meta?.label || section.type}</p>
+                                        <p className="text-[11px] text-zinc-400 truncate">{meta?.description}</p>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => moveSection(index, 'up')}
+                                            disabled={index === 0}
+                                            className="rounded-md p-1.5 text-zinc-400 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
+                                            title="Move up"
+                                        >
+                                            <HiOutlineChevronUp className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => moveSection(index, 'down')}
+                                            disabled={index === sections.length - 1}
+                                            className="rounded-md p-1.5 text-zinc-400 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
+                                            title="Move down"
+                                        >
+                                            <HiOutlineChevronDown className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeSection(section.id)}
+                                            className="rounded-md p-1.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                            title="Remove section"
+                                        >
+                                            <HiOutlineTrash className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+
+            {/* Right: Available sections to add */}
+            <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">
+                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-white">Available Sections</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">Click to add to your page</p>
+                </div>
+                <div className="p-3 space-y-1.5">
+                    {TEMPLATE_SECTIONS.map((tmpl) => {
+                        const isAdded = usedTypes.has(tmpl.type);
+                        return (
+                            <button
+                                key={tmpl.type}
+                                type="button"
+                                onClick={() => !isAdded && addSection(tmpl.type)}
+                                disabled={isAdded}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${isAdded
+                                    ? 'bg-green-50/50 text-green-600 cursor-default dark:bg-green-500/5 dark:text-green-400'
+                                    : 'hover:bg-indigo-50 text-zinc-700 dark:text-zinc-300 dark:hover:bg-indigo-500/10'
+                                    }`}
+                            >
+                                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 text-lg dark:bg-zinc-800">
+                                    {tmpl.icon}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium">{tmpl.label}</p>
+                                    <p className="text-[11px] text-zinc-400 truncate">{tmpl.description}</p>
+                                </div>
+                                {isAdded ? (
+                                    <span className="text-xs font-medium text-green-500">✓ Added</span>
+                                ) : (
+                                    <HiOutlinePlus className="h-4 w-4 text-indigo-500 flex-shrink-0" />
+                                )}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 }

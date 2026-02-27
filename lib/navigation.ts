@@ -1,5 +1,9 @@
-import { db } from '@/lib/db';
 import { cache } from 'react';
+import { db } from '@/lib/db';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Server-side helpers — cached per request via React.cache()
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 export interface NavItem {
     id: string;
@@ -11,21 +15,28 @@ export interface NavItem {
     children?: NavItem[];
 }
 
-export interface NavMenu {
+export interface NavCategory {
     id: string;
     name: string;
-    items: NavItem[];
+    slug: string;
+    description: string | null;
+    image: string | null;
+    products: {
+        id: string;
+        name: string;
+        slug: string;
+        description: string | null;
+    }[];
 }
 
 /**
- * Fetch a navigation menu by name (e.g. "header", "footer").
- * Supports 3 levels of nesting: top-level → children → grandchildren.
- * Uses React cache() to deduplicate across generateMetadata + page render.
+ * Fetch the "header" NavigationMenu with nested items.
+ * Returns top-level items only (children nested).
  */
-export const getNavMenu = cache(async (name: string): Promise<NavMenu | null> => {
+export const getHeaderMenu = cache(async (): Promise<NavItem[]> => {
     try {
         const menu = await db.navigationMenu.findUnique({
-            where: { name },
+            where: { name: 'header' },
             include: {
                 items: {
                     where: { parentId: null },
@@ -43,18 +54,53 @@ export const getNavMenu = cache(async (name: string): Promise<NavMenu | null> =>
                 },
             },
         });
-        return menu as NavMenu | null;
+        return (menu?.items ?? []) as NavItem[];
     } catch {
-        return null;
+        return [];
     }
 });
 
 /**
- * Fetch all navigation menus.
+ * Fetch published categories with their published products.
+ * Used for the Products mega-menu.
  */
-export const getAllNavMenus = cache(async (): Promise<NavMenu[]> => {
+export const getNavCategories = cache(async (): Promise<NavCategory[]> => {
     try {
-        const menus = await db.navigationMenu.findMany({
+        const categories = await db.category.findMany({
+            where: { isPublished: true },
+            orderBy: { sortOrder: 'asc' },
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                description: true,
+                image: true,
+                products: {
+                    where: { isPublished: true },
+                    orderBy: { sortOrder: 'asc' },
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        description: true,
+                    },
+                },
+            },
+        });
+        return categories;
+    } catch {
+        return [];
+    }
+});
+
+/**
+ * Fetch the "industries" NavigationMenu with items.
+ * Each item represents an industry link.
+ */
+export const getNavIndustries = cache(async (): Promise<NavItem[]> => {
+    try {
+        const menu = await db.navigationMenu.findUnique({
+            where: { name: 'industries' },
             include: {
                 items: {
                     where: { parentId: null },
@@ -62,17 +108,12 @@ export const getAllNavMenus = cache(async (): Promise<NavMenu[]> => {
                     include: {
                         children: {
                             orderBy: { order: 'asc' },
-                            include: {
-                                children: {
-                                    orderBy: { order: 'asc' },
-                                },
-                            },
                         },
                     },
                 },
             },
         });
-        return menus as NavMenu[];
+        return (menu?.items ?? []) as NavItem[];
     } catch {
         return [];
     }

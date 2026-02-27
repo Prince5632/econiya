@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { auth } from '@/auth';
 import { cache } from 'react';
-import Navbar from '@/app/components/Navbar';
+import NavbarServer from '@/app/components/NavbarServer';
 import Footer from '@/app/components/Footer';
 
 // Use React cache to avoid duplicate DB calls between generateMetadata and the component
@@ -55,11 +55,32 @@ export default async function PublicPageView({ params }: PageProps) {
         notFound();
     }
 
+    // ── Template Page ─────────────────────────────────────────────────
+    if (page.pageType === 'template' && page.template) {
+        const TemplateRenderer = (await import('@/app/components/TemplateRenderer')).default;
+        return (
+            <>
+                <NavbarServer />
+                <main>
+                    {isDraft && (
+                        <div className="mx-auto max-w-7xl px-4">
+                            <div className="mb-4 mt-4 rounded-lg bg-amber-50 px-4 py-2 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
+                                ● Draft Mode — This page is not yet public.
+                            </div>
+                        </div>
+                    )}
+                    <TemplateRenderer template={page.template as any} />
+                </main>
+                <Footer />
+            </>
+        );
+    }
+
     // ── Custom Code Page ─────────────────────────────────────────────
     if (page.pageType === 'custom_code') {
         return (
             <>
-                <Navbar />
+                <NavbarServer />
                 <main className="page-content">
                     {isDraft && (
                         <div className="mx-auto max-w-7xl px-4">
@@ -94,7 +115,7 @@ export default async function PublicPageView({ params }: PageProps) {
     // ── Rich Text Page ───────────────────────────────────────────────
     return (
         <>
-            <Navbar />
+            <NavbarServer />
             <main className="page-content mx-auto max-w-4xl px-4 py-12 md:py-20">
                 <article className="prose prose-zinc max-w-none dark:prose-invert">
                     {isDraft && (

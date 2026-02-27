@@ -6,13 +6,13 @@ import ProductFocus from "@/app/components/landing/ProductFocus";
 import Industries from "@/app/components/landing/Industries";
 import VisionMissionValues from "@/app/components/landing/VisionMissionValues";
 import GetInTouch from "@/app/components/landing/GetInTouch";
-import Navbar from "@/app/components/Navbar";
+import NavbarServer from "@/app/components/NavbarServer";
 import Footer from "@/app/components/Footer";
 
 export default async function Home() {
   return (
     <>
-      <Navbar />
+      <NavbarServer />
       <main>
         <Hero />
         <section className="py-16 bg-gray-50/50 border-b border-gray-100">
