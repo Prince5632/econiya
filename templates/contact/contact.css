@@ -1,0 +1,409 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ECONIYA — CONTACT PAGE STYLES  (paste into CMS → CSS field)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --ct-primary: #dc2626;
+    --ct-primary-dark: #b91c1c;
+    --ct-primary-light: #fef2f2;
+    --ct-gray-50: #f9fafb;
+    --ct-gray-100: #f3f4f6;
+    --ct-gray-200: #e5e7eb;
+    --ct-gray-300: #d1d5db;
+    --ct-gray-400: #9ca3af;
+    --ct-gray-500: #6b7280;
+    --ct-gray-600: #4b5563;
+    --ct-gray-700: #374151;
+    --ct-gray-800: #1f2937;
+    --ct-gray-900: #111827;
+}
+
+.custom-page-content {
+    font-family: 'Inter', sans-serif;
+    color: var(--ct-gray-800);
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.ct-hero {
+    position: relative;
+    padding: 100px 0 60px;
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient(135deg, #fff 0%, var(--ct-primary-light) 50%, #fff 100%);
+}
+
+.ct-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(220, 38, 38, .06) 0%, transparent 60%),
+        radial-gradient(circle at 70% 30%, rgba(234, 179, 8, .05) 0%, transparent 50%);
+}
+
+.ct-hero-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.ct-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ct-primary);
+    background: rgba(220, 38, 38, .08);
+    border: 1px solid rgba(220, 38, 38, .15);
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.ct-hero-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--ct-gray-900);
+    margin: 0 0 16px;
+}
+
+.ct-gradient-text {
+    background: linear-gradient(135deg, var(--ct-primary), #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ct-hero-sub {
+    font-size: 17px;
+    color: var(--ct-gray-500);
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.ct-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.ct-section {
+    padding: 60px 0;
+}
+
+.ct-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ── Info Cards ────────────────────────────────────────────────────────── */
+.ct-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ct-info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px;
+    background: #fff;
+    border: 1px solid var(--ct-gray-100);
+    border-radius: 16px;
+    transition: all .3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+}
+
+.ct-info-card:hover {
+    border-color: rgba(220, 38, 38, .2);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, .08);
+    transform: translateY(-2px);
+}
+
+.ct-info-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--ct-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ct-primary);
+}
+
+.ct-info-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.ct-info-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ct-gray-400);
+    margin: 0 0 4px;
+}
+
+.ct-info-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ct-gray-900);
+    margin: 0 0 2px;
+}
+
+.ct-info-hint {
+    font-size: 12px;
+    color: var(--ct-gray-400);
+    margin: 0;
+}
+
+.ct-map-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--ct-gray-100);
+}
+
+/* ── Form Card ─────────────────────────────────────────────────────────── */
+.ct-form-col {
+    position: sticky;
+    top: 100px;
+}
+
+.ct-form-card {
+    background: #fff;
+    border: 1px solid var(--ct-gray-100);
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, .05);
+}
+
+.ct-form-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ct-gray-900);
+    margin: 0 0 6px;
+}
+
+.ct-form-sub {
+    font-size: 14px;
+    color: var(--ct-gray-400);
+    margin: 0 0 28px;
+}
+
+.ct-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.ct-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ct-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ct-gray-700);
+}
+
+.ct-req {
+    color: var(--ct-primary);
+}
+
+.ct-field input,
+.ct-field select,
+.ct-field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--ct-gray-200);
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ct-gray-800);
+    background: var(--ct-gray-50);
+    transition: all .25s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.ct-field input:focus,
+.ct-field select:focus,
+.ct-field textarea:focus {
+    border-color: var(--ct-primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .1);
+}
+
+.ct-field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.ct-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #fff;
+    background: linear-gradient(135deg, var(--ct-primary), var(--ct-primary-dark));
+    cursor: pointer;
+    transition: all .3s ease;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, .25);
+}
+
+.ct-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, .35);
+}
+
+.ct-submit svg {
+    width: 18px;
+    height: 18px;
+}
+
+.ct-success {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.ct-success svg {
+    width: 56px;
+    height: 56px;
+    color: #16a34a;
+    margin: 0 auto 16px;
+}
+
+.ct-success h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ct-gray-900);
+    margin: 0 0 8px;
+}
+
+.ct-success p {
+    font-size: 14px;
+    color: var(--ct-gray-500);
+    margin: 0;
+}
+
+/* ── FAQ ───────────────────────────────────────────────────────────────── */
+.ct-faq-section {
+    background: var(--ct-gray-50);
+}
+
+.ct-section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 40px;
+    color: var(--ct-gray-900);
+}
+
+.ct-faq-grid {
+    max-width: 740px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ct-faq-item {
+    background: #fff;
+    border: 1px solid var(--ct-gray-100);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color .3s;
+}
+
+.ct-faq-item.open {
+    border-color: rgba(220, 38, 38, .2);
+}
+
+.ct-faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ct-gray-800);
+    font-family: inherit;
+    text-align: left;
+}
+
+.ct-faq-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--ct-gray-400);
+    transition: transform .3s;
+}
+
+.ct-faq-item.open .ct-faq-icon {
+    transform: rotate(45deg);
+    color: var(--ct-primary);
+}
+
+.ct-faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease, padding .35s ease;
+    padding: 0 22px;
+}
+
+.ct-faq-item.open .ct-faq-a {
+    max-height: 200px;
+    padding: 0 22px 18px;
+}
+
+.ct-faq-a p {
+    font-size: 14px;
+    color: var(--ct-gray-500);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .ct-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ct-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .ct-form-col {
+        position: static;
+    }
+
+    .ct-hero {
+        padding: 80px 0 40px;
+    }
+}

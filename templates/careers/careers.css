@@ -1,0 +1,394 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ECONIYA — CAREERS PAGE STYLES  (paste into CMS → CSS field)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --cr-primary: #dc2626;
+    --cr-primary-dark: #b91c1c;
+    --cr-primary-light: #fef2f2;
+    --cr-gray-50: #f9fafb;
+    --cr-gray-100: #f3f4f6;
+    --cr-gray-200: #e5e7eb;
+    --cr-gray-400: #9ca3af;
+    --cr-gray-500: #6b7280;
+    --cr-gray-600: #4b5563;
+    --cr-gray-700: #374151;
+    --cr-gray-800: #1f2937;
+    --cr-gray-900: #111827;
+}
+
+.custom-page-content {
+    font-family: 'Inter', sans-serif;
+    color: var(--cr-gray-800);
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.cr-hero {
+    position: relative;
+    padding: 100px 0 70px;
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient(135deg, #fff 0%, var(--cr-primary-light) 50%, #fff 100%);
+}
+
+.cr-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 25% 55%, rgba(220, 38, 38, .06) 0%, transparent 60%),
+        radial-gradient(circle at 75% 35%, rgba(234, 179, 8, .05) 0%, transparent 50%);
+}
+
+.cr-hero-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.cr-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cr-primary);
+    background: rgba(220, 38, 38, .08);
+    border: 1px solid rgba(220, 38, 38, .15);
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.cr-hero-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--cr-gray-900);
+    margin: 0 0 16px;
+}
+
+.cr-grad {
+    background: linear-gradient(135deg, var(--cr-primary), #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cr-hero-sub {
+    font-size: 17px;
+    color: var(--cr-gray-500);
+    max-width: 560px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+}
+
+.cr-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--cr-primary), var(--cr-primary-dark));
+    text-decoration: none;
+    transition: all .3s;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, .3);
+}
+
+.cr-hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, .45);
+}
+
+.cr-hero-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.cr-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.cr-section {
+    padding: 70px 0;
+}
+
+.cr-section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 16px;
+    color: var(--cr-gray-900);
+}
+
+.cr-section-sub {
+    text-align: center;
+    font-size: 15px;
+    color: var(--cr-gray-500);
+    margin: 0 0 40px;
+}
+
+.cr-section-sub a {
+    color: var(--cr-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.cr-section-sub a:hover {
+    text-decoration: underline;
+}
+
+/* ── Perks Grid ────────────────────────────────────────────────────────── */
+.cr-perks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.cr-perk-card {
+    padding: 30px 24px;
+    background: #fff;
+    border: 1px solid var(--cr-gray-100);
+    border-radius: 18px;
+    text-align: center;
+    transition: all .3s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+}
+
+.cr-perk-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .08);
+    border-color: rgba(220, 38, 38, .15);
+}
+
+.cr-perk-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cr-primary-light);
+    color: var(--cr-primary);
+}
+
+.cr-perk-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.cr-perk-icon-b {
+    background: rgba(59, 130, 246, .08);
+    color: #3b82f6;
+}
+
+.cr-perk-icon-c {
+    background: rgba(16, 185, 129, .08);
+    color: #10b981;
+}
+
+.cr-perk-icon-d {
+    background: rgba(234, 179, 8, .08);
+    color: #d97706;
+}
+
+.cr-perk-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cr-gray-900);
+    margin: 0 0 8px;
+}
+
+.cr-perk-card p {
+    font-size: 13px;
+    color: var(--cr-gray-500);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ── Job Cards ─────────────────────────────────────────────────────────── */
+.cr-openings-section {
+    background: var(--cr-gray-50);
+}
+
+.cr-jobs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cr-job-card {
+    background: #fff;
+    border: 1px solid var(--cr-gray-100);
+    border-radius: 18px;
+    padding: 28px;
+    transition: all .3s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+}
+
+.cr-job-card:hover {
+    border-color: rgba(220, 38, 38, .2);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, .08);
+}
+
+.cr-job-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.cr-job-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cr-gray-900);
+    margin: 0 0 8px;
+}
+
+.cr-job-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.cr-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--cr-primary-light);
+    color: var(--cr-primary);
+    border: 1px solid rgba(220, 38, 38, .1);
+}
+
+.cr-tag-loc {
+    background: rgba(59, 130, 246, .06);
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, .1);
+}
+
+.cr-job-dept {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--cr-gray-400);
+    flex-shrink: 0;
+}
+
+.cr-job-card>p {
+    font-size: 14px;
+    color: var(--cr-gray-500);
+    line-height: 1.7;
+    margin: 0 0 16px;
+}
+
+.cr-job-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cr-job-exp {
+    font-size: 12px;
+    color: var(--cr-gray-400);
+    font-weight: 500;
+}
+
+.cr-apply-btn {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cr-primary);
+    text-decoration: none;
+    transition: all .2s;
+}
+
+.cr-apply-btn:hover {
+    color: var(--cr-primary-dark);
+    text-decoration: underline;
+}
+
+/* ── CTA ───────────────────────────────────────────────────────────────── */
+.cr-cta-section {
+    padding: 60px 0;
+    background: linear-gradient(135deg, var(--cr-gray-900), #1a1a2e);
+}
+
+.cr-cta-inner {
+    text-align: center;
+}
+
+.cr-cta-inner h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 12px;
+}
+
+.cr-cta-inner p {
+    font-size: 16px;
+    color: var(--cr-gray-400);
+    margin: 0 0 28px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cr-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--cr-primary), var(--cr-primary-dark));
+    text-decoration: none;
+    transition: all .3s;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, .35);
+}
+
+.cr-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, .5);
+}
+
+.cr-cta-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .cr-perks-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cr-job-header {
+        flex-direction: column;
+    }
+
+    .cr-job-dept {
+        margin-top: 8px;
+    }
+
+    .cr-hero {
+        padding: 80px 0 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cr-perks-grid {
+        grid-template-columns: 1fr;
+    }
+}
