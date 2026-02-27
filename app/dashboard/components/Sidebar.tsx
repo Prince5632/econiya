@@ -12,11 +12,13 @@ import {
     HiOutlineCog6Tooth,
     HiOutlineHome,
     HiOutlineXMark,
+    HiOutlineBars3,
 } from 'react-icons/hi2';
 
 const navItems = [
     { label: 'Dashboard', href: '/dashboard', icon: HiOutlineHome },
     { label: 'Pages', href: '/dashboard/pages', icon: HiOutlineDocumentText },
+    { label: 'Navigation', href: '/dashboard/navigation', icon: HiOutlineBars3 },
     { label: 'Categories', href: '/dashboard/categories', icon: HiOutlineFolder },
     { label: 'Products', href: '/dashboard/products', icon: HiOutlineCube },
     { label: 'RFQ Forms', href: '/dashboard/rfq-forms', icon: HiOutlineClipboardDocumentList },
@@ -80,8 +82,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                                         href={item.href}
                                         onClick={onClose}
                                         className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
-                                                ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400'
-                                                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                                            ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400'
+                                            : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
                                             }`}
                                     >
                                         <item.icon className="h-5 w-5 flex-shrink-0" />

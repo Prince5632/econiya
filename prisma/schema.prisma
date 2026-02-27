@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -13,44 +10,220 @@ datasource db {
   provider = "postgresql"
 }
 
-// User Model for auth
+// ─── Auth ───────────────────────────────────────────────────────────────────────
 
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String //Hashed Password 
+  password  String // Hashed Password
   name      String?
   role      String   @default("admin")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Pages {
-  id          String  @id @default(cuid()) @map("_id")
-  slug        String  @unique
-  title       String
-  isPublushed Boolean @default(false)
+// ─── CMS Pages ──────────────────────────────────────────────────────────────────
 
-  //   // JSON fields for nested structures (SEO, Template)
-  seo      Json
-  template Json
+model Page {
+  id    String @id @default(cuid()) @map("_id")
+  slug  String @unique
+  title String
+
+  // Rich-text content (from RichTextEditor)
+  content String @default("")
+
+  // Custom code content (raw HTML/CSS/JS uploads or code-mode editing)
+  htmlContent String? @db.Text
+  cssContent  String? @db.Text
+  jsContent   String? @db.Text
+
+  // Page type: "richtext" | "custom_code"
+  pageType String @default("richtext")
+
+  // Publishing status: "DRAFT" | "PUBLISHED"
+  status String @default("DRAFT")
+
+  // Legacy boolean kept for backward compat — derived from status
+  isPublished Boolean @default(false)
+
+  // Optional JSON blobs for template / SEO (kept for backward compat)
+  seo      Json?
+  template Json?
+
+  // Flattened SEO fields (used by the dashboard editor & public route)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("demo_pages") // Optional: map to specific collection name
+  @@map("cms_pages")
 }
+
+// ─── Media ──────────────────────────────────────────────────────────────────────
 
 model Media {
   id               String   @id @default(cuid()) @map("_id")
-  s3Key            String   @unique // The filename in S3
-  url              String // Public URL
+  s3Key            String   @unique
+  url              String
   originalFilename String
   displayName      String
   mimeType         String
   size             Int
+  altText          String   @default("")
+  folder           String   @default("general")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   @@map("media_files")
+}
+
+// ─── Navigation ─────────────────────────────────────────────────────────────────
+
+model NavigationMenu {
+  id        String           @id @default(cuid())
+  name      String           @unique // e.g. "header", "footer"
+  items     NavigationItem[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("navigation_menus")
+}
+
+model NavigationItem {
+  id       String  @id @default(cuid())
+  label    String
+  url      String
+  order    Int     @default(0)
+  target   String  @default("_self") // "_self" | "_blank"
+  parentId String? // For sub-menus / dropdowns
+
+  menuId String
+  menu   NavigationMenu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  parent   NavigationItem?  @relation("NavItemChildren", fields: [parentId], references: [id])
+  children NavigationItem[] @relation("NavItemChildren")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("navigation_items")
+}
+
+// ─── Blog ───────────────────────────────────────────────────────────────────────
+
+model Blog {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  excerpt         String?
+  content         String    @default("")
+  thumbnail       String?
+  featuredImage   String?
+  tags            String[]  @default([])
+  isPublished     Boolean   @default(false)
+  publishedAt     DateTime?
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("blogs")
+}
+
+// ─── Categories & Products ──────────────────────────────────────────────────────
+
+model Category {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  description     String?
+  image           String?
+  sortOrder       Int       @default(0)
+  isPublished     Boolean   @default(true)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
+  products        Product[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id              String         @id @default(cuid())
+  name            String
+  slug            String         @unique
+  description     String?
+  content         String         @default("")
+  images          Json?
+  specs           Json?
+  sortOrder       Int            @default(0)
+  isPublished     Boolean        @default(false)
+  categoryId      String
+  category        Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  rfqFormId       String?
+  rfqForm         RfqFormConfig? @relation(fields: [rfqFormId], references: [id], onDelete: SetNull)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@map("products")
+}
+
+// ─── RFQ (Request for Quote) ────────────────────────────────────────────────────
+
+model RfqFormConfig {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  fields      Json            @default("[]")
+  products    Product[]
+  submissions RfqSubmission[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("rfq_form_configs")
+}
+
+model RfqSubmission {
+  id        String        @id @default(cuid())
+  formId    String
+  form      RfqFormConfig @relation(fields: [formId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  formData  Json          @default("{}")
+  status    String        @default("new")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("rfq_submissions")
+}
+
+// ─── Site Settings ──────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  id            String   @id @default("singleton")
+  logoUrl       String?
+  siteName      String   @default("My Site")
+  headerLinks   Json?
+  footerLinks   Json?
+  socialLinks   Json?
+  copyrightText String   @default("© 2026 All rights reserved.")
+  footerContent String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("site_settings")
 }

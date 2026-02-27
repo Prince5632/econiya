@@ -10,7 +10,9 @@ interface Page {
     id: string;
     title: string;
     slug: string;
+    status: string;
     isPublished: boolean;
+    pageType: string;
     updatedAt: string;
 }
 
@@ -25,10 +27,15 @@ export default function PagesListPage() {
     }, []);
 
     async function fetchPages() {
-        const res = await fetch('/api/pages');
-        const data = await res.json();
-        setPages(data);
-        setLoading(false);
+        try {
+            const res = await fetch('/api/pages');
+            const data = await res.json();
+            setPages(Array.isArray(data) ? data : []);
+        } catch {
+            setPages([]);
+        } finally {
+            setLoading(false);
+        }
     }
 
     async function handleDelete() {
