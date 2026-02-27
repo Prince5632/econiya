@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// User Model for auth
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String //Hashed Password 
+  name      String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Pages {
+  id          String  @id @default(cuid()) @map("_id")
+  slug        String  @unique
+  title       String
+  isPublushed Boolean @default(false)
+
+  //   // JSON fields for nested structures (SEO, Template)
+  seo      Json
+  template Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("demo_pages") // Optional: map to specific collection name
+}
+
+model Media {
+  id               String   @id @default(cuid()) @map("_id")
+  s3Key            String   @unique // The filename in S3
+  url              String // Public URL
+  originalFilename String
+  displayName      String
+  mimeType         String
+  size             Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("media_files")
+}
