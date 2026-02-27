@@ -1,0 +1,891 @@
+/* ============================================================================
+   ECONIYA — Header & Footer Styles
+   All selectors are namespaced under .econiya-header / .econiya-footer
+   to prevent CSS conflicts with custom-code CMS pages.
+   ============================================================================ */
+
+/* ─── CSS Custom Properties (scoped to header/footer) ────────────────────── */
+
+.econiya-header,
+.econiya-footer {
+    --eh-primary: #0f172a;
+    --eh-primary-rgb: 15, 23, 42;
+    --eh-accent: #c62828;
+    --eh-accent-hover: #b71c1c;
+    --eh-accent-light: rgba(198, 40, 40, 0.08);
+    --eh-text-dark: #1e293b;
+    --eh-text-medium: #475569;
+    --eh-text-light: #94a3b8;
+    --eh-bg-white: #ffffff;
+    --eh-bg-light: #f8fafc;
+    --eh-border: rgba(0, 0, 0, 0.06);
+    --eh-glass-bg: rgba(255, 255, 255, 0.92);
+    --eh-glass-border: rgba(0, 0, 0, 0.06);
+    --eh-dropdown-bg: #ffffff;
+    --eh-dropdown-text: #1e293b;
+    --eh-dropdown-hover: #f1f5f9;
+    --eh-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --eh-radius: 10px;
+    --eh-max-width: 1320px;
+    --eh-footer-bg: #0c1425;
+    --eh-footer-text: rgba(255, 255, 255, 0.65);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADER — Light / Professional CWD-Inspired Design
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.econiya-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--eh-glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--eh-glass-border);
+    transition: background var(--eh-transition), box-shadow var(--eh-transition);
+}
+
+.econiya-header.is-scrolled {
+    box-shadow: 0 1px 20px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.97);
+}
+
+/* Container */
+.econiya-header .eh-container {
+    max-width: var(--eh-max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 72px;
+}
+
+/* ─── Logo ────────────────────────────────────────────────────────────────── */
+
+.econiya-header .eh-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.econiya-header .eh-logo-img {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+}
+
+.econiya-header .eh-logo-icon {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, var(--eh-accent) 0%, #e53935 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    box-shadow: 0 2px 10px rgba(198, 40, 40, 0.25);
+}
+
+.econiya-header .eh-logo-text {
+    color: var(--eh-text-dark);
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.econiya-header .eh-logo-subtitle {
+    display: block;
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--eh-text-light);
+    letter-spacing: 0.02em;
+    margin-top: -2px;
+}
+
+/* ─── Desktop Navigation ─────────────────────────────────────────────────── */
+
+.econiya-header .eh-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 2rem;
+}
+
+.econiya-header .eh-nav-link {
+    color: var(--eh-text-medium);
+    text-decoration: none;
+    padding: 0.5rem 1.125rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: color var(--eh-transition), background var(--eh-transition);
+    cursor: pointer;
+    background: none;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    position: relative;
+    white-space: nowrap;
+    font-family: inherit;
+    letter-spacing: -0.01em;
+}
+
+.econiya-header .eh-nav-link:hover,
+.econiya-header .eh-nav-link:focus-visible {
+    color: var(--eh-text-dark);
+}
+
+/* Accent underline on hover */
+.econiya-header .eh-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--eh-accent);
+    border-radius: 1px;
+    transition: width var(--eh-transition), left var(--eh-transition);
+}
+
+.econiya-header .eh-nav-link:hover::after {
+    width: 60%;
+    left: 20%;
+}
+
+/* Chevron icon */
+.econiya-header .eh-chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--eh-transition);
+    opacity: 0.5;
+}
+
+/* ─── Dropdown (Mega Menu) ───────────────────────────────────────────────── */
+
+.econiya-header .eh-dropdown {
+    position: relative;
+}
+
+.econiya-header .eh-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    min-width: 240px;
+    background: var(--eh-dropdown-bg);
+    border-radius: 12px;
+    box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.10),
+        0 8px 24px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(0, 0, 0, 0.03);
+    padding: 0.5rem;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity var(--eh-transition),
+        transform var(--eh-transition),
+        visibility var(--eh-transition);
+}
+
+/* Dropdown arrow/connector */
+.econiya-header .eh-dropdown-panel::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: var(--eh-dropdown-bg);
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    border-left: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.econiya-header .eh-dropdown:hover>.eh-dropdown-panel,
+.econiya-header .eh-dropdown:focus-within>.eh-dropdown-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.econiya-header .eh-dropdown:hover>.eh-nav-link .eh-chevron {
+    transform: rotate(180deg);
+}
+
+.econiya-header .eh-dropdown:hover>.eh-nav-link {
+    color: var(--eh-accent);
+}
+
+.econiya-header .eh-dropdown:hover>.eh-nav-link::after {
+    width: 60%;
+    left: 20%;
+}
+
+/* Dropdown items */
+.econiya-header .eh-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 0.875rem;
+    color: var(--eh-dropdown-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background var(--eh-transition), color var(--eh-transition);
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+}
+
+.econiya-header .eh-dropdown-item:hover {
+    background: var(--eh-accent-light);
+    color: var(--eh-accent);
+}
+
+/* ─── Nested Sub-Menu (Level 3) ──────────────────────────────────────────── */
+
+.econiya-header .eh-submenu {
+    position: relative;
+}
+
+.econiya-header .eh-submenu-panel {
+    position: absolute;
+    top: -0.5rem;
+    left: calc(100% + 6px);
+    min-width: 200px;
+    background: var(--eh-dropdown-bg);
+    border-radius: 12px;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.10),
+        0 4px 16px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(0, 0, 0, 0.03);
+    padding: 0.5rem;
+    z-index: 2100;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-6px);
+    transition:
+        opacity var(--eh-transition),
+        transform var(--eh-transition),
+        visibility var(--eh-transition);
+}
+
+.econiya-header .eh-submenu:hover>.eh-submenu-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.econiya-header .eh-submenu:hover>.eh-dropdown-item {
+    background: var(--eh-accent-light);
+    color: var(--eh-accent);
+}
+
+.econiya-header .eh-submenu-arrow {
+    width: 12px;
+    height: 12px;
+    opacity: 0.35;
+    transition: opacity var(--eh-transition), transform var(--eh-transition);
+}
+
+.econiya-header .eh-submenu:hover .eh-submenu-arrow {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+/* ─── CTA Button ─────────────────────────────────────────────────────────── */
+
+.econiya-header .eh-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--eh-accent) 0%, #e53935 100%);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform var(--eh-transition), box-shadow var(--eh-transition);
+    box-shadow: 0 2px 12px rgba(198, 40, 40, 0.25);
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+}
+
+.econiya-header .eh-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(198, 40, 40, 0.35);
+}
+
+/* ─── Mobile Hamburger Button ────────────────────────────────────────────── */
+
+.econiya-header .eh-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--eh-text-dark);
+    border-radius: 8px;
+    transition: background var(--eh-transition);
+}
+
+.econiya-header .eh-hamburger:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.econiya-header .eh-hamburger svg {
+    width: 26px;
+    height: 26px;
+}
+
+/* ─── Header Responsive ──────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .econiya-header .eh-nav {
+        display: none;
+    }
+
+    .econiya-header .eh-cta-desktop {
+        display: none;
+    }
+
+    .econiya-header .eh-hamburger {
+        display: flex;
+    }
+
+    .econiya-header .eh-container {
+        padding: 0 1rem;
+        height: 60px;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE DRAWER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.econiya-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.econiya-mobile-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.econiya-mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(380px, 88vw);
+    height: 100vh;
+    height: 100dvh;
+    background: var(--eh-bg-white);
+    z-index: 9999;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+}
+
+.econiya-mobile-drawer.is-open {
+    transform: translateX(0);
+}
+
+.econiya-mobile-drawer .emd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--eh-border);
+    min-height: 60px;
+}
+
+.econiya-mobile-drawer .emd-close {
+    background: none;
+    border: none;
+    color: var(--eh-text-light);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.econiya-mobile-drawer .emd-close:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--eh-text-dark);
+}
+
+.econiya-mobile-drawer .emd-close svg {
+    width: 24px;
+    height: 24px;
+}
+
+.econiya-mobile-drawer .emd-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.econiya-mobile-drawer .emd-nav-item {
+    display: block;
+}
+
+.econiya-mobile-drawer .emd-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.5rem;
+    color: var(--eh-text-dark);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    letter-spacing: -0.01em;
+}
+
+.econiya-mobile-drawer .emd-nav-link:hover {
+    background: var(--eh-bg-light);
+}
+
+.econiya-mobile-drawer .emd-expand-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.25s ease;
+    opacity: 0.35;
+    color: var(--eh-text-medium);
+}
+
+.econiya-mobile-drawer .emd-expand-icon.is-expanded {
+    transform: rotate(180deg);
+    color: var(--eh-accent);
+    opacity: 1;
+}
+
+/* Accordion children */
+.econiya-mobile-drawer .emd-children {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--eh-bg-light);
+}
+
+.econiya-mobile-drawer .emd-children.is-expanded {
+    max-height: 800px;
+}
+
+.econiya-mobile-drawer .emd-child-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1.5rem 0.7rem 2.5rem;
+    color: var(--eh-text-medium);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 400;
+    transition: background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    border-left: 2px solid transparent;
+}
+
+.econiya-mobile-drawer .emd-child-link:hover {
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--eh-accent);
+    border-left-color: var(--eh-accent);
+}
+
+/* Sub-children (Level 3) */
+.econiya-mobile-drawer .emd-grandchildren {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.econiya-mobile-drawer .emd-grandchildren.is-expanded {
+    max-height: 500px;
+}
+
+.econiya-mobile-drawer .emd-grandchild-link {
+    display: block;
+    padding: 0.55rem 1.5rem 0.55rem 3.5rem;
+    color: var(--eh-text-light);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.econiya-mobile-drawer .emd-grandchild-link:hover {
+    color: var(--eh-accent);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* Mobile CTA */
+.econiya-mobile-drawer .emd-cta-wrap {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--eh-border);
+}
+
+.econiya-mobile-drawer .emd-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--eh-accent) 0%, #e53935 100%);
+    border-radius: 10px;
+    text-decoration: none;
+    width: 100%;
+    box-shadow: 0 2px 12px rgba(198, 40, 40, 0.25);
+    transition: box-shadow 0.2s ease;
+}
+
+.econiya-mobile-drawer .emd-cta:hover {
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.35);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FOOTER — Professional CWD-Inspired Dark Footer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.econiya-footer {
+    background: var(--eh-footer-bg);
+    color: var(--eh-footer-text);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative accent line at top */
+.econiya-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+            var(--eh-accent) 0%,
+            #e53935 30%,
+            transparent 70%);
+}
+
+.econiya-footer .ef-container {
+    max-width: var(--eh-max-width);
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ─── Footer Top Row — Address + Social Icons ────────────────────────────── */
+
+.econiya-footer .ef-top-bar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 2rem;
+}
+
+.econiya-footer .ef-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    max-width: 550px;
+}
+
+.econiya-footer .ef-address-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 2px;
+}
+
+.econiya-footer .ef-address-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 0.25rem;
+}
+
+.econiya-footer .ef-address-text {
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.econiya-footer .ef-social {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0;
+}
+
+.econiya-footer .ef-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.econiya-footer .ef-social-link:hover {
+    background: var(--eh-accent);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.econiya-footer .ef-social-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ─── Footer Main — Brand + Navigation Columns ──────────────────────────── */
+
+.econiya-footer .ef-main {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+}
+
+/* Brand column */
+.econiya-footer .ef-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.econiya-footer .ef-brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+}
+
+.econiya-footer .ef-brand-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--eh-accent) 0%, #e53935 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(198, 40, 40, 0.25);
+}
+
+.econiya-footer .ef-brand-logo-img {
+    height: 34px;
+    width: auto;
+    object-fit: contain;
+}
+
+.econiya-footer .ef-brand-name {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.econiya-footer .ef-brand-tagline {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    line-height: 1.65;
+    max-width: 260px;
+}
+
+/* Navigation Columns */
+.econiya-footer .ef-nav-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2rem;
+}
+
+.econiya-footer .ef-nav-column {
+    min-width: 0;
+}
+
+.econiya-footer .ef-nav-heading {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-bottom: 0.625rem;
+}
+
+.econiya-footer .ef-nav-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    background: var(--eh-accent);
+    border-radius: 1px;
+}
+
+.econiya-footer .ef-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.econiya-footer .ef-nav-link {
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 400;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    display: inline-block;
+    padding: 0.125rem 0;
+}
+
+.econiya-footer .ef-nav-link:hover {
+    color: #fff;
+    padding-left: 4px;
+}
+
+/* Single link (no children) */
+.econiya-footer .ef-single-link {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.econiya-footer .ef-single-link:hover {
+    color: #fff;
+}
+
+/* ─── Copyright Bar ──────────────────────────────────────────────────────── */
+
+.econiya-footer .ef-copyright-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.125rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.econiya-footer .ef-copyright-text {
+    margin: 0;
+}
+
+.econiya-footer .ef-legal-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.econiya-footer .ef-legal-link {
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    font-size: 0.7rem;
+    transition: color 0.2s ease;
+}
+
+.econiya-footer .ef-legal-link:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ─── Footer Responsive ──────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .econiya-footer .ef-container {
+        padding: 0 1.25rem;
+    }
+
+    .econiya-footer .ef-top-bar {
+        flex-direction: column;
+        gap: 1.25rem;
+        padding: 2rem 0;
+    }
+
+    .econiya-footer .ef-main {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .econiya-footer .ef-nav-columns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .econiya-footer .ef-copyright-bar {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .econiya-footer .ef-nav-columns {
+        grid-template-columns: 1fr;
+    }
+}

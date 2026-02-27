@@ -35,6 +35,7 @@ export default function NavigationPage() {
     const [itemForm, setItemForm] = useState({ label: '', url: '', target: '_self' });
     const [addingToMenu, setAddingToMenu] = useState<string | null>(null);
     const [addingSubItem, setAddingSubItem] = useState<string | null>(null);
+    const [deletingMenuId, setDeletingMenuId] = useState<string | null>(null);
 
     const fetchMenus = useCallback(async () => {
         try {
@@ -95,6 +96,12 @@ export default function NavigationPage() {
 
     async function deleteItem(itemId: string) {
         await fetch(`/api/navigation/items/${itemId}`, { method: 'DELETE' });
+        fetchMenus();
+    }
+
+    async function deleteMenu(menuId: string) {
+        await fetch(`/api/navigation?id=${menuId}`, { method: 'DELETE' });
+        setDeletingMenuId(null);
         fetchMenus();
     }
 
@@ -167,16 +174,33 @@ export default function NavigationPage() {
                                     {menu.items.length} items
                                 </span>
                             </div>
-                            <button
-                                onClick={() => {
-                                    setAddingToMenu(addingToMenu === menu.id ? null : menu.id);
-                                    setItemForm({ label: '', url: '', target: '_self' });
-                                }}
-                                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
-                            >
-                                <HiOutlinePlus className="h-3.5 w-3.5" />
-                                Add Item
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => {
+                                        setAddingToMenu(addingToMenu === menu.id ? null : menu.id);
+                                        setItemForm({ label: '', url: '', target: '_self' });
+                                    }}
+                                    className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
+                                >
+                                    <HiOutlinePlus className="h-3.5 w-3.5" />
+                                    Add Item
+                                </button>
+                                {deletingMenuId === menu.id ? (
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-xs text-red-500">Delete menu?</span>
+                                        <button onClick={() => deleteMenu(menu.id)} className="rounded-md bg-red-600 px-2 py-1 text-xs font-medium text-white hover:bg-red-700">Yes</button>
+                                        <button onClick={() => setDeletingMenuId(null)} className="rounded-md border border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400">No</button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => setDeletingMenuId(menu.id)}
+                                        className="rounded-md p-1.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                        title="Delete menu"
+                                    >
+                                        <HiOutlineTrash className="h-3.5 w-3.5" />
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {/* Add Item Form */}

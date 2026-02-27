@@ -46,6 +46,21 @@ export async function GET(request: NextRequest) {
     }
 }
 
+// DELETE /api/navigation?id=xxx - Delete a menu (cascades items)
+export async function DELETE(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+        if (!id) {
+            return NextResponse.json({ error: 'Menu ID is required' }, { status: 400 });
+        }
+        await db.navigationMenu.delete({ where: { id } });
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to delete menu' }, { status: 500 });
+    }
+}
+
 // POST /api/navigation - Create a new menu
 export async function POST(request: NextRequest) {
     try {

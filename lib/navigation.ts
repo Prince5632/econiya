@@ -19,6 +19,7 @@ export interface NavMenu {
 
 /**
  * Fetch a navigation menu by name (e.g. "header", "footer").
+ * Supports 3 levels of nesting: top-level → children → grandchildren.
  * Uses React cache() to deduplicate across generateMetadata + page render.
  */
 export const getNavMenu = cache(async (name: string): Promise<NavMenu | null> => {
@@ -32,6 +33,11 @@ export const getNavMenu = cache(async (name: string): Promise<NavMenu | null> =>
                     include: {
                         children: {
                             orderBy: { order: 'asc' },
+                            include: {
+                                children: {
+                                    orderBy: { order: 'asc' },
+                                },
+                            },
                         },
                     },
                 },
@@ -56,6 +62,11 @@ export const getAllNavMenus = cache(async (): Promise<NavMenu[]> => {
                     include: {
                         children: {
                             orderBy: { order: 'asc' },
+                            include: {
+                                children: {
+                                    orderBy: { order: 'asc' },
+                                },
+                            },
                         },
                     },
                 },

@@ -1,13 +1,18 @@
 import Link from 'next/link';
 import { getNavMenu, type NavItem } from '@/lib/navigation';
+import { getSiteSettings } from '@/lib/settings';
+import HeaderShell from './HeaderShell';
+import HeaderMobileToggle from './HeaderMobileToggle';
 
-function NavItemDropdown({ item }: { item: NavItem }) {
+/* ── Level-3 Sub-Menu Item ──────────────────────────────────────────────── */
+
+function SubMenuItem({ item }: { item: NavItem }) {
     if (!item.children || item.children.length === 0) {
         return (
             <Link
                 href={item.url}
                 target={item.target}
-                className="nav-link"
+                className="eh-dropdown-item"
             >
                 {item.label}
             </Link>
@@ -15,22 +20,22 @@ function NavItemDropdown({ item }: { item: NavItem }) {
     }
 
     return (
-        <div className="nav-dropdown">
-            <button className="nav-link nav-dropdown-trigger">
+        <div className="eh-submenu">
+            <div className="eh-dropdown-item">
                 {item.label}
-                <svg className="nav-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <svg className="eh-submenu-arrow" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
                 </svg>
-            </button>
-            <div className="nav-dropdown-menu">
-                {item.children.map((child) => (
+            </div>
+            <div className="eh-submenu-panel">
+                {item.children.map(gc => (
                     <Link
-                        key={child.id}
-                        href={child.url}
-                        target={child.target}
-                        className="nav-dropdown-item"
+                        key={gc.id}
+                        href={gc.url}
+                        target={gc.target}
+                        className="eh-dropdown-item"
                     >
-                        {child.label}
+                        {gc.label}
                     </Link>
                 ))}
             </div>
@@ -38,27 +43,84 @@ function NavItemDropdown({ item }: { item: NavItem }) {
     );
 }
 
+/* ── Nav Item (Top Level) ───────────────────────────────────────────────── */
+
+function NavItemDesktop({ item }: { item: NavItem }) {
+    // Simple link (no children)
+    if (!item.children || item.children.length === 0) {
+        return (
+            <Link
+                href={item.url}
+                target={item.target}
+                className="eh-nav-link"
+            >
+                {item.label}
+            </Link>
+        );
+    }
+
+    // Dropdown with children
+    return (
+        <div className="eh-dropdown">
+            <button className="eh-nav-link" aria-haspopup="true">
+                {item.label}
+                <svg className="eh-chevron" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+            </button>
+            <div className="eh-dropdown-panel">
+                {item.children.map(child => (
+                    <SubMenuItem key={child.id} item={child} />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+/* ── Header (Server Component) ──────────────────────────────────────────── */
+
 export default async function Header() {
-    const menu = await getNavMenu('header');
+    const [menu, settings] = await Promise.all([
+        getNavMenu('header'),
+        getSiteSettings(),
+    ]);
+
+    const items = menu?.items ?? [];
 
     return (
-        <header className="site-header">
-            <div className="header-container">
-                <Link href="/" className="header-logo">
-                    <div className="header-logo-icon">E</div>
-                    <span className="header-logo-text">Econiya</span>
+        <HeaderShell>
+            <div className="eh-container">
+                {/* Logo */}
+                <Link href="/" className="eh-logo">
+                    {settings.logoUrl ? (
+                        <img
+                            src={settings.logoUrl}
+                            alt={settings.siteName}
+                            className="eh-logo-img"
+                        />
+                    ) : (
+                        <div className="eh-logo-icon">
+                            {settings.siteName.charAt(0).toUpperCase()}
+                        </div>
+                    )}
+                    <span className="eh-logo-text">{settings.siteName}</span>
                 </Link>
 
-                <nav className="header-nav">
-                    {menu?.items?.map((item) => (
-                        <NavItemDropdown key={item.id} item={item} />
+                {/* Desktop Navigation */}
+                <nav className="eh-nav" aria-label="Main navigation">
+                    {items.map(item => (
+                        <NavItemDesktop key={item.id} item={item} />
                     ))}
                 </nav>
 
-                <Link href="/contact" className="header-cta">
+                {/* Desktop CTA */}
+                <Link href="/contact" className="eh-cta eh-cta-desktop">
                     Get in Touch
                 </Link>
+
+                {/* Mobile Hamburger + Drawer */}
+                <HeaderMobileToggle items={items} siteName={settings.siteName} />
             </div>
-        </header>
+        </HeaderShell>
     );
 }

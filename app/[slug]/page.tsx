@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { auth } from '@/auth';
 import { cache } from 'react';
-import Header from '@/app/components/Header';
+import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 
 // Use React cache to avoid duplicate DB calls between generateMetadata and the component
@@ -59,7 +59,7 @@ export default async function PublicPageView({ params }: PageProps) {
     if (page.pageType === 'custom_code') {
         return (
             <>
-                <Header />
+                <Navbar />
                 <main className="page-content">
                     {isDraft && (
                         <div className="mx-auto max-w-7xl px-4">
@@ -94,7 +94,7 @@ export default async function PublicPageView({ params }: PageProps) {
     // ── Rich Text Page ───────────────────────────────────────────────
     return (
         <>
-            <Header />
+            <Navbar />
             <main className="page-content mx-auto max-w-4xl px-4 py-12 md:py-20">
                 <article className="prose prose-zinc max-w-none dark:prose-invert">
                     {isDraft && (
