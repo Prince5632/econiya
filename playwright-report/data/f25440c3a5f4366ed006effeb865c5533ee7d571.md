@@ -1,0 +1,126 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - generic [ref=e12]:
+    - complementary [ref=e13]:
+      - link "C CMS Admin" [ref=e15] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e16]: C
+        - generic [ref=e17]: CMS Admin
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Dashboard" [ref=e21] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e22]
+              - text: Dashboard
+          - listitem [ref=e24]:
+            - link "Pages" [ref=e25] [cursor=pointer]:
+              - /url: /dashboard/pages
+              - img [ref=e26]
+              - text: Pages
+          - listitem [ref=e28]:
+            - link "Navigation" [ref=e29] [cursor=pointer]:
+              - /url: /dashboard/navigation
+              - img [ref=e30]
+              - text: Navigation
+          - listitem [ref=e32]:
+            - link "Categories" [ref=e33] [cursor=pointer]:
+              - /url: /dashboard/categories
+              - img [ref=e34]
+              - text: Categories
+          - listitem [ref=e36]:
+            - link "Products" [ref=e37] [cursor=pointer]:
+              - /url: /dashboard/products
+              - img [ref=e38]
+              - text: Products
+          - listitem [ref=e40]:
+            - link "RFQ Forms" [ref=e41] [cursor=pointer]:
+              - /url: /dashboard/rfq-forms
+              - img [ref=e42]
+              - text: RFQ Forms
+          - listitem [ref=e44]:
+            - link "Blogs" [ref=e45] [cursor=pointer]:
+              - /url: /dashboard/blogs
+              - img [ref=e46]
+              - text: Blogs
+          - listitem [ref=e48]:
+            - link "Media" [ref=e49] [cursor=pointer]:
+              - /url: /dashboard/media
+              - img [ref=e50]
+              - text: Media
+          - listitem [ref=e52]:
+            - link "Settings" [ref=e53] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e54]
+              - text: Settings
+      - paragraph [ref=e58]: © 2026 CMS Admin
+    - generic [ref=e59]:
+      - banner [ref=e60]:
+        - heading "Welcome back" [level=1] [ref=e62]
+        - generic [ref=e63]:
+          - generic [ref=e64]:
+            - generic [ref=e65]: A
+            - generic [ref=e66]: Admin User
+          - button "Logout" [ref=e67]:
+            - img [ref=e68]
+            - generic [ref=e70]: Logout
+      - main [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - heading "Dashboard" [level=1] [ref=e74]
+            - paragraph [ref=e75]: Overview of your content management system
+          - generic [ref=e76]:
+            - link "Pages 3 View all →" [ref=e77] [cursor=pointer]:
+              - /url: /dashboard/pages
+              - generic [ref=e78]:
+                - generic [ref=e79]:
+                  - paragraph [ref=e80]: Pages
+                  - paragraph [ref=e81]: "3"
+                - img [ref=e83]
+              - generic [ref=e85]: View all →
+            - link "Categories 5 View all →" [ref=e86] [cursor=pointer]:
+              - /url: /dashboard/categories
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - paragraph [ref=e89]: Categories
+                  - paragraph [ref=e90]: "5"
+                - img [ref=e92]
+              - generic [ref=e94]: View all →
+            - link "Products 12 View all →" [ref=e95] [cursor=pointer]:
+              - /url: /dashboard/products
+              - generic [ref=e96]:
+                - generic [ref=e97]:
+                  - paragraph [ref=e98]: Products
+                  - paragraph [ref=e99]: "12"
+                - img [ref=e101]
+              - generic [ref=e103]: View all →
+            - link "Blogs 0 View all →" [ref=e104] [cursor=pointer]:
+              - /url: /dashboard/blogs
+              - generic [ref=e105]:
+                - generic [ref=e106]:
+                  - paragraph [ref=e107]: Blogs
+                  - paragraph [ref=e108]: "0"
+                - img [ref=e110]
+              - generic [ref=e112]: View all →
+            - link "Media Files 0 View all →" [ref=e113] [cursor=pointer]:
+              - /url: /dashboard/media
+              - generic [ref=e114]:
+                - generic [ref=e115]:
+                  - paragraph [ref=e116]: Media Files
+                  - paragraph [ref=e117]: "0"
+                - img [ref=e119]
+              - generic [ref=e121]: View all →
+            - link "RFQ Submissions 0 View all →" [ref=e122] [cursor=pointer]:
+              - /url: /dashboard/rfq-forms
+              - generic [ref=e123]:
+                - generic [ref=e124]:
+                  - paragraph [ref=e125]: RFQ Submissions
+                  - paragraph [ref=e126]: "0"
+                - img [ref=e128]
+              - generic [ref=e130]: View all →
+```

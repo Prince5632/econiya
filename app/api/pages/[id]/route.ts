@@ -1,58 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getPage, updatePage, deletePage } from '@/lib/services/page.service';
+import { DomainError } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
 
 // GET /api/pages/[id]
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+) {
     try {
         const { id } = await params;
-        const page = await db.page.findUnique({ where: { id } });
-        if (!page) return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+        const page = await getPage(db, id);
         return NextResponse.json(page);
-    } catch (error) {
+    } catch (error: unknown) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
+        }
         return NextResponse.json({ error: 'Failed to fetch page' }, { status: 500 });
     }
 }
 
 // PUT /api/pages/[id]
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+) {
     try {
         const { id } = await params;
         const body = await request.json();
-
-        const isPublished = body.status === 'PUBLISHED';
-
-        const page = await db.page.update({
-            where: { id },
-            data: {
-                title: body.title,
-                slug: body.slug?.replace(/^\/+/, ''),
-                content: body.content,
-                htmlContent: body.htmlContent ?? undefined,
-                cssContent: body.cssContent ?? undefined,
-                jsContent: body.jsContent ?? undefined,
-                pageType: body.pageType ?? undefined,
-                status: body.status ?? undefined,
-                isPublished,
-                template: body.template,
-                metaTitle: body.metaTitle || null,
-                metaDescription: body.metaDescription || null,
-                metaKeywords: body.metaKeywords || null,
-                ogImage: body.ogImage || null,
-            },
-        });
+        const page = await updatePage(db, id, body);
 
         // Revalidate the public page path for ISR
-        try {
-            revalidatePath(`/${page.slug}`);
-        } catch {
-            // Revalidation may fail in API routes; that's okay
-        }
+        try { revalidatePath(`/${page.slug}`); } catch { /* ignore */ }
 
         return NextResponse.json(page);
-    } catch (error: any) {
-        if (error?.code === 'P2002') {
-            return NextResponse.json({ error: 'A page with this slug already exists' }, { status: 409 });
+    } catch (error: unknown) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
         }
         console.error('Failed to update page:', error);
         return NextResponse.json({ error: 'Failed to update page' }, { status: 500 });
@@ -60,20 +45,22 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // DELETE /api/pages/[id]
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+) {
     try {
         const { id } = await params;
-        const page = await db.page.delete({ where: { id } });
+        const page = await deletePage(db, id);
 
         // Revalidate deleted path
-        try {
-            revalidatePath(`/${page.slug}`);
-        } catch {
-            // ignore
-        }
+        try { revalidatePath(`/${page.slug}`); } catch { /* ignore */ }
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: unknown) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
+        }
         return NextResponse.json({ error: 'Failed to delete page' }, { status: 500 });
     }
 }

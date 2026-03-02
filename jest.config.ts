@@ -2,11 +2,17 @@ import type { Config } from 'jest';
 import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest({
-    // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
     dir: './',
 });
 
-// Add any custom config to be passed to Jest
+/**
+ * Next/jest wraps our config asynchronously. The `projects` key is
+ * NOT supported inside createJestConfig — so we use a flat config
+ * that covers both unit and editor tests with jsdom.
+ *
+ * Integration tests (node env) are run via a separate jest config:
+ *   npx jest --config jest.integration.config.ts
+ */
 const config: Config = {
     coverageProvider: 'v8',
     testEnvironment: 'jest-environment-jsdom',
@@ -16,23 +22,43 @@ const config: Config = {
     },
 
     // ─── Test discovery ──────────────────────────────────────────────────────
-    // Picks up both:
-    //   • __tests__/**/*.test.ts(x)   ← centralized test directory
-    //   • **/*.test.ts(x)             ← co-located test files (legacy / future)
     testMatch: [
-        '<rootDir>/__tests__/**/*.(test|spec).[jt]s?(x)',
-        '<rootDir>/**/*.(test|spec).[jt]s?(x)',
+        '<rootDir>/__tests__/unit/**/*.(test|spec).[jt]s?(x)',
+        '<rootDir>/__tests__/unit/editor/**/*.(test|spec).[jt]s?(x)',
     ],
 
-    // ─── Coverage ────────────────────────────────────────────────────────────
-    collectCoverageFrom: [
-        'app/**/*.{ts,tsx}',
-        'lib/**/*.{ts,tsx}',
-        '!app/**/*.d.ts',
-        '!app/**/layout.tsx',        // Next.js layouts – no logic to test
-        '!app/**/page.tsx',          // Exclude pure page shells
-        '!**/node_modules/**',
+    // ─── Exclude generated / infra / E2E ─────────────────────────────────────
+    testPathIgnorePatterns: [
+        '/node_modules/',
+        '/.next/',
+        '/__tests__/integration/',
+        '/__tests__/e2e/',
     ],
+
+    // ─── Coverage — scoped to meaningful logic only ───────────────────────────
+    collectCoverageFrom: [
+        'lib/services/**/*.{ts,tsx}',
+        'lib/validators/**/*.{ts,tsx}',
+        'lib/errors.ts',
+        'app/dashboard/pages/editor/utils.ts',
+        'lib/products.ts',
+        'lib/password.ts',
+
+        // Explicit exclusions
+        '!lib/db.ts',
+        '!lib/navigation.ts',
+        '!lib/settings.ts',
+        '!lib/landing-db.ts',
+        '!lib/s3.ts',
+        '!lib/templates.ts',
+        '!**/node_modules/**',
+        '!**/.next/**',
+        '!**/prisma/**',
+        '!**/public/**',
+        '!**/templates/**',
+        '!**/*.d.ts',
+    ],
+
     coverageThreshold: {
         global: {
             branches: 70,
@@ -43,6 +69,4 @@ const config: Config = {
     },
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config);
-

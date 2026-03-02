@@ -10,7 +10,7 @@ export const getGlobalSettings = cache(async () => {
         const settings = await db.siteSettings.findFirst();
         if (!settings) {
             return {
-                footer: { copyrightText: '© 2024 Econiya Technologies. All rights reserved.', socialLinks: [] },
+                footer: { copyrightText: '© 2026 Econiya Technologies. All rights reserved.', socialLinks: [] },
                 contactInfo: { email: 'contact@econiya.com', phone: '+91-000-000-0000', address: 'India' },
             };
         }
