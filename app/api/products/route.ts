@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
                 content: body.content || '',
                 images: body.images || null,
                 specs: body.specs || null,
+                keyFeatures: body.keyFeatures || null,
+                highlightSpecs: body.highlightSpecs || null,
                 sortOrder: body.sortOrder || 0,
                 isPublished: body.isPublished || false,
                 categoryId: body.categoryId,
@@ -41,9 +43,10 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(product, { status: 201 });
     } catch (error: any) {
+        console.error('Product creation error:', error);
         if (error?.code === 'P2002') {
             return NextResponse.json({ error: 'A product with this slug already exists' }, { status: 409 });
         }
-        return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+        return NextResponse.json({ error: error?.message || 'Failed to create product' }, { status: 500 });
     }
 }

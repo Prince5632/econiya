@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./components/header-footer.css";
+@import "./components/product-detail.css";
 
 @theme {
   /* Override red palette with Econiya brand reds */

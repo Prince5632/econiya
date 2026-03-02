@@ -20,7 +20,7 @@ export default function RfqFormsListPage() {
     const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
-        fetch('/api/rfq-forms').then(r => r.json()).then(d => { setForms(d); setLoading(false); });
+        fetch('/api/rfq-forms').then(r => r.json()).then(d => { setForms(Array.isArray(d) ? d : []); setLoading(false); }).catch(() => setLoading(false));
     }, []);
 
     async function handleDelete() {

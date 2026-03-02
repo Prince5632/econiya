@@ -28,6 +28,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
                 content: body.content,
                 images: body.images,
                 specs: body.specs,
+                keyFeatures: body.keyFeatures || null,
+                highlightSpecs: body.highlightSpecs || null,
                 sortOrder: body.sortOrder,
                 isPublished: body.isPublished,
                 categoryId: body.categoryId,

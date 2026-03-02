@@ -22,7 +22,7 @@ export default function ProductsListPage() {
     const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
-        fetch('/api/products').then(r => r.json()).then(d => { setProducts(d); setLoading(false); });
+        fetch('/api/products').then(r => r.json()).then(d => { setProducts(Array.isArray(d) ? d : []); setLoading(false); }).catch(() => setLoading(false));
     }, []);
 
     async function handleDelete() {

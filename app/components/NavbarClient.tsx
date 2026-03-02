@@ -180,7 +180,7 @@ const NavbarClient = ({ headerItems, categories, industryItems }: NavbarClientPr
                                                 {categories[hoveredCategory]?.products.map((product) => (
                                                     <Link
                                                         key={product.id}
-                                                        href={`/products/${categories[hoveredCategory].slug}/${product.slug}`}
+                                                        href={`/products/${product.slug}`}
                                                         className="group/product flex items-start gap-3 px-3 py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-50/80 hover:to-transparent transition-all duration-200"
                                                     >
                                                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 group-hover/product:from-red-50 group-hover/product:to-red-100/50 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200">
@@ -200,7 +200,7 @@ const NavbarClient = ({ headerItems, categories, industryItems }: NavbarClientPr
                                             {/* View category link */}
                                             <div className="mt-3 pt-3 border-t border-gray-50 px-1">
                                                 <Link
-                                                    href={`/products/${categories[hoveredCategory]?.slug}`}
+                                                    href="/products"
                                                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 transition-colors group/link"
                                                 >
                                                     View all {categories[hoveredCategory]?.name} products
@@ -415,7 +415,7 @@ const NavbarClient = ({ headerItems, categories, industryItems }: NavbarClientPr
                                                 {category.products.map((product) => (
                                                     <Link
                                                         key={product.id}
-                                                        href={`/products/${category.slug}/${product.slug}`}
+                                                        href={`/products/${product.slug}`}
                                                         className="block px-4 py-2.5 ml-4 rounded-lg text-sm text-gray-600 hover:text-red-600 hover:bg-red-50/50 transition-all"
                                                         onClick={closeMobile}
                                                     >
