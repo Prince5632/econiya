@@ -5,7 +5,7 @@
  * The `db` parameter is injected so unit tests can pass a mock.
  */
 
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient, Prisma } from '@prisma/client';
 import { toDomainError, NotFoundError, ValidationError } from '@/lib/errors';
 import {
     deriveIsPublished,
@@ -34,7 +34,7 @@ export async function listBlogs(db: PrismaClient, options: ListBlogsOptions = {}
     const { publishedOnly = false, tag, category, search, page = 1, limit = 9 } = options;
     const skip = (page - 1) * limit;
 
-    const where: Record<string, unknown> = {};
+    const where: Prisma.BlogWhereInput = {};
     if (publishedOnly) where.isPublished = true;
     if (category) where.category = { equals: category, mode: 'insensitive' };
     if (tag) where.tags = { has: tag };
@@ -47,7 +47,7 @@ export async function listBlogs(db: PrismaClient, options: ListBlogsOptions = {}
 
     const [blogs, total] = await Promise.all([
         db.blog.findMany({
-            where: where as Parameters<typeof db.blog.findMany>[0]['where'],
+            where,
             select: {
                 id: true,
                 title: true,
@@ -70,7 +70,7 @@ export async function listBlogs(db: PrismaClient, options: ListBlogsOptions = {}
             skip,
             take: limit,
         }),
-        db.blog.count({ where: where as Parameters<typeof db.blog.count>[0]['where'] }),
+        db.blog.count({ where }),
     ]);
 
     return { blogs, total, page, limit, totalPages: Math.ceil(total / limit) };
@@ -180,11 +180,11 @@ export async function listComments(
     blogId: string,
     statusFilter: CommentStatus | 'all' = 'approved'
 ) {
-    const where: Record<string, unknown> = { blogId };
+    const where: Prisma.BlogCommentWhereInput = { blogId };
     if (statusFilter !== 'all') where.status = statusFilter;
 
     return db.blogComment.findMany({
-        where: where as Parameters<typeof db.blogComment.findMany>[0]['where'],
+        where,
         select: { id: true, name: true, body: true, status: true, createdAt: true },
         orderBy: { createdAt: 'desc' },
     });

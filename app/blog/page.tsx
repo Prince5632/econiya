@@ -47,29 +47,17 @@ export default async function BlogListPage({ searchParams }: SearchParams) {
         ];
     }
 
-    const [blogs, total, allBlogs, featuredBlog] = await Promise.all([
-        db.blog.findMany({
-            where,
-            select: {
-                id: true, title: true, slug: true, excerpt: true,
-                thumbnail: true, featuredImage: true, tags: true,
-                category: true, authorName: true, authorAvatar: true,
-                readTime: true, publishedAt: true, createdAt: true,
-            },
-            orderBy: { publishedAt: 'desc' },
-            skip: (currentPage - 1) * perPage,
-            take: perPage,
-        }),
-        db.blog.count({ where }),
-        // For sidebar tags/categories
-        db.blog.findMany({
-            where: { isPublished: true },
-            select: { tags: true, category: true },
-        }),
-        // Featured / latest post (only on first unfiltered page)
-        (!search && !tag && !category && currentPage === 1)
-            ? db.blog.findFirst({
-                where: { isPublished: true },
+    // ── Fetch data (with connection error resilience) ──────────────────
+    let blogs: BlogData[] = [];
+    let total = 0;
+    let allBlogs: { tags: string[]; category: string | null }[] = [];
+    let featuredBlog: BlogData | null = null;
+    let dbError = false;
+
+    try {
+        const [_blogs, _total, _allBlogs, _feat] = await Promise.all([
+            db.blog.findMany({
+                where,
                 select: {
                     id: true, title: true, slug: true, excerpt: true,
                     thumbnail: true, featuredImage: true, tags: true,
@@ -77,9 +65,37 @@ export default async function BlogListPage({ searchParams }: SearchParams) {
                     readTime: true, publishedAt: true, createdAt: true,
                 },
                 orderBy: { publishedAt: 'desc' },
-            })
-            : null,
-    ]);
+                skip: (currentPage - 1) * perPage,
+                take: perPage,
+            }),
+            db.blog.count({ where }),
+            // For sidebar tags/categories
+            db.blog.findMany({
+                where: { isPublished: true },
+                select: { tags: true, category: true },
+            }),
+            // Featured / latest post (only on first unfiltered page)
+            (!search && !tag && !category && currentPage === 1)
+                ? db.blog.findFirst({
+                    where: { isPublished: true },
+                    select: {
+                        id: true, title: true, slug: true, excerpt: true,
+                        thumbnail: true, featuredImage: true, tags: true,
+                        category: true, authorName: true, authorAvatar: true,
+                        readTime: true, publishedAt: true, createdAt: true,
+                    },
+                    orderBy: { publishedAt: 'desc' },
+                })
+                : null,
+        ]);
+        blogs = _blogs as BlogData[];
+        total = _total;
+        allBlogs = _allBlogs;
+        featuredBlog = _feat as BlogData | null;
+    } catch (err) {
+        console.error('[Blog Page] Database error:', (err as Error).message);
+        dbError = true;
+    }
 
     const totalPages = Math.ceil(total / perPage);
 
@@ -202,6 +218,24 @@ export default async function BlogListPage({ searchParams }: SearchParams) {
                 )}
 
                 <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+                    {/* ── Database Error Banner ── */}
+                    {dbError && (
+                        <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 px-6 py-5 dark:border-amber-800 dark:bg-amber-950/50">
+                            <div className="flex items-start gap-3">
+                                <span className="mt-0.5 text-xl">⚠️</span>
+                                <div>
+                                    <p className="font-semibold text-amber-800 dark:text-amber-200">Temporarily unable to load articles</p>
+                                    <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+                                        We&apos;re having trouble connecting to our servers. Please try refreshing the page in a moment.
+                                    </p>
+                                    <Link href="/blog" className="mt-2 inline-block text-sm font-semibold text-amber-700 hover:text-amber-900 dark:text-amber-300">
+                                        Refresh →
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* ── Featured Post (page 1 only, no filters) ── */}
                     {featuredBlog && (
                         <section className="mb-14">

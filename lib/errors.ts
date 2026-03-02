@@ -43,6 +43,29 @@ export class ValidationError extends DomainError {
 export const PRISMA_NOT_FOUND_CODE = 'P2025';   // Record not found
 export const PRISMA_UNIQUE_CODE = 'P2002';   // Unique constraint violation
 
+/** Database connection failure — maps to HTTP 503. */
+export class DatabaseConnectionError extends DomainError {
+    constructor(message = 'Database is temporarily unavailable. Please try again in a moment.') {
+        super(message, 503);
+    }
+}
+
+// ── Connection error detection patterns ──────────────────────────────────────
+const CONNECTION_ERROR_PATTERNS = [
+    "Can't reach database server",
+    'Connection refused',
+    'Connection reset',
+    'ECONNREFUSED',
+    'ECONNRESET',
+    'ETIMEDOUT',
+    'connect ETIMEDOUT',
+    'Connection terminated unexpectedly',
+    'connection is insecure',
+    'Server has closed the connection',
+    'prepared statement',
+    'Connection pool timeout',
+];
+
 /**
  * Converts a raw Prisma/unknown error into a typed DomainError.
  * If it is already a DomainError, it is returned unchanged.
@@ -51,6 +74,13 @@ export function toDomainError(error: unknown, entityName = 'Resource'): DomainEr
     if (error instanceof DomainError) return error;
 
     const prismaError = error as { code?: string; message?: string };
+    const msg = prismaError?.message ?? '';
+
+    // Detect database connection / networking errors
+    if (CONNECTION_ERROR_PATTERNS.some((p) => msg.includes(p))) {
+        console.error('[DB Connection Error]', msg);
+        return new DatabaseConnectionError();
+    }
 
     if (prismaError?.code === PRISMA_UNIQUE_CODE) {
         return new ConflictError(`A ${entityName} with this slug already exists`);
@@ -60,6 +90,6 @@ export function toDomainError(error: unknown, entityName = 'Resource'): DomainEr
         return new NotFoundError(`${entityName} not found`);
     }
 
-    const message = prismaError?.message ?? `Failed to process ${entityName}`;
+    const message = msg || `Failed to process ${entityName}`;
     return new DomainError(message, 500);
 }

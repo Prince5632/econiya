@@ -18,6 +18,9 @@ export async function GET(request: NextRequest) {
         });
         return NextResponse.json(result);
     } catch (error) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
+        }
         return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
     }
 }

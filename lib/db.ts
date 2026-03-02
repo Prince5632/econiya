@@ -16,6 +16,11 @@ const pool = new Pool({
     user: decodeURIComponent(url.username),
     password: decodeURIComponent(url.password),
     ssl: { rejectUnauthorized: false },
+    // Resilience settings
+    max: 10,                        // max pool size
+    idleTimeoutMillis: 30_000,      // close idle connections after 30s
+    connectionTimeoutMillis: 10_000, // fail if can't connect in 10s
+    allowExitOnIdle: true,          // allow process exit when pool is idle
 });
 
 const adapter = new PrismaPg(pool);
