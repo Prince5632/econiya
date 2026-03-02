@@ -123,6 +123,11 @@ model Blog {
   thumbnail       String?
   featuredImage   String?
   tags            String[]  @default([])
+  category        String?
+  authorName      String?   @default("Admin")
+  authorAvatar    String?
+  readTime        Int? // estimated minutes to read
+  status          String    @default("DRAFT") // "DRAFT" | "PUBLISHED"
   isPublished     Boolean   @default(false)
   publishedAt     DateTime?
   metaTitle       String?
@@ -132,7 +137,24 @@ model Blog {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  comments BlogComment[]
+
   @@map("blogs")
+}
+
+model BlogComment {
+  id        String   @id @default(cuid())
+  blogId    String
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  body      String   @db.Text
+  // "pending" | "approved" | "rejected"
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blog_comments")
 }
 
 // ─── Categories & Products ──────────────────────────────────────────────────────

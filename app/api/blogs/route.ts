@@ -1,41 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { listBlogs, createBlog } from '@/lib/services/blog.service';
+import { CreateBlogSchema } from '@/lib/validators/blog.validator';
+import { DomainError } from '@/lib/errors';
 
-export async function GET() {
+/** GET /api/blogs — list blogs with optional filters & pagination */
+export async function GET(request: NextRequest) {
     try {
-        const blogs = await db.blog.findMany({
-            orderBy: { updatedAt: 'desc' },
+        const { searchParams } = request.nextUrl;
+        const result = await listBlogs(db, {
+            publishedOnly: searchParams.get('published') === 'true',
+            tag: searchParams.get('tag') ?? undefined,
+            category: searchParams.get('category') ?? undefined,
+            search: searchParams.get('search') ?? undefined,
+            page: Number(searchParams.get('page') ?? 1),
+            limit: Number(searchParams.get('limit') ?? 9),
         });
-        return NextResponse.json(blogs);
+        return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
     }
 }
 
+/** POST /api/blogs — create a new blog post */
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const blog = await db.blog.create({
-            data: {
-                title: body.title,
-                slug: body.slug,
-                excerpt: body.excerpt || null,
-                content: body.content || '',
-                thumbnail: body.thumbnail || null,
-                featuredImage: body.featuredImage || null,
-                tags: body.tags || [],
-                isPublished: body.isPublished || false,
-                publishedAt: body.isPublished ? new Date() : null,
-                metaTitle: body.metaTitle || null,
-                metaDescription: body.metaDescription || null,
-                metaKeywords: body.metaKeywords || null,
-                ogImage: body.ogImage || null,
-            },
-        });
+        const parsed = CreateBlogSchema.safeParse(body);
+        if (!parsed.success) {
+            return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
+        }
+        const blog = await createBlog(db, parsed.data);
         return NextResponse.json(blog, { status: 201 });
-    } catch (error: any) {
-        if (error?.code === 'P2002') {
-            return NextResponse.json({ error: 'A blog with this slug already exists' }, { status: 409 });
+    } catch (error) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
         }
         return NextResponse.json({ error: 'Failed to create blog' }, { status: 500 });
     }

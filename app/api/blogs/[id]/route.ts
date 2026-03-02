@@ -1,54 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getBlog, updateBlog, deleteBlog } from '@/lib/services/blog.service';
+import { UpdateBlogSchema } from '@/lib/validators/blog.validator';
+import { DomainError } from '@/lib/errors';
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+type Params = { params: Promise<{ id: string }> };
+
+/** GET /api/blogs/[id] — fetch by id or slug */
+export async function GET(_req: NextRequest, { params }: Params) {
     try {
         const { id } = await params;
-        const blog = await db.blog.findUnique({ where: { id } });
-        if (!blog) return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
+        const blog = await getBlog(db, id);
         return NextResponse.json(blog);
     } catch (error) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
+        }
         return NextResponse.json({ error: 'Failed to fetch blog' }, { status: 500 });
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+/** PUT /api/blogs/[id] — update a blog post */
+export async function PUT(request: NextRequest, { params }: Params) {
     try {
         const { id } = await params;
         const body = await request.json();
-        const blog = await db.blog.update({
-            where: { id },
-            data: {
-                title: body.title,
-                slug: body.slug,
-                excerpt: body.excerpt,
-                content: body.content,
-                thumbnail: body.thumbnail,
-                featuredImage: body.featuredImage,
-                tags: body.tags || [],
-                isPublished: body.isPublished,
-                publishedAt: body.isPublished ? (body.publishedAt || new Date()) : null,
-                metaTitle: body.metaTitle || null,
-                metaDescription: body.metaDescription || null,
-                metaKeywords: body.metaKeywords || null,
-                ogImage: body.ogImage || null,
-            },
-        });
+        const parsed = UpdateBlogSchema.safeParse(body);
+        if (!parsed.success) {
+            return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
+        }
+        const blog = await updateBlog(db, id, parsed.data);
         return NextResponse.json(blog);
-    } catch (error: any) {
-        if (error?.code === 'P2002') {
-            return NextResponse.json({ error: 'A blog with this slug already exists' }, { status: 409 });
+    } catch (error) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
         }
         return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+/** DELETE /api/blogs/[id] — delete a blog post */
+export async function DELETE(_req: NextRequest, { params }: Params) {
     try {
         const { id } = await params;
-        await db.blog.delete({ where: { id } });
+        await deleteBlog(db, id);
         return NextResponse.json({ success: true });
     } catch (error) {
+        if (error instanceof DomainError) {
+            return NextResponse.json({ error: error.message }, { status: error.statusCode });
+        }
         return NextResponse.json({ error: 'Failed to delete blog' }, { status: 500 });
     }
 }
