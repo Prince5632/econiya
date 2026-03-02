@@ -282,12 +282,12 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        {/* Blogs */}
+                        {/* Blog */}
                         <Link
-                            href="/blogs"
+                            href="/blog"
                             className="px-4 py-2.5 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50/80 rounded-lg transition-all duration-200"
                         >
-                            Blogs
+                            Blog
                         </Link>
 
                         {/* Contact Us */}
@@ -400,13 +400,13 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        {/* Blogs Mobile */}
+                        {/* Blog Mobile */}
                         <Link
-                            href="/blogs"
+                            href="/blog"
                             className="block px-4 py-3.5 rounded-xl text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all"
                             onClick={closeMobile}
                         >
-                            Blogs
+                            Blog
                         </Link>
 
                         {/* Contact Us Mobile */}

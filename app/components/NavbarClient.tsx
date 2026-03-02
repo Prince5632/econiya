@@ -269,7 +269,15 @@ const NavbarClient = ({ headerItems, categories, industryItems }: NavbarClientPr
                             </div>
                         )}
 
-                        {/* Dynamic header items from DB (e.g. About, Blogs, Contact) */}
+                        {/* Blog — always shown */}
+                        <Link
+                            href="/blog"
+                            className="px-4 py-2.5 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50/80 rounded-lg transition-all duration-200"
+                        >
+                            Blog
+                        </Link>
+
+                        {/* Dynamic header items from DB (e.g. About, Contact) */}
                         {headerItems.map((item) =>
                             item.children && item.children.length > 0 ? (
                                 <div
@@ -453,6 +461,15 @@ const NavbarClient = ({ headerItems, categories, industryItems }: NavbarClientPr
                                 </div>
                             </div>
                         )}
+
+                        {/* Blog Mobile — always shown */}
+                        <Link
+                            href="/blog"
+                            className="block px-4 py-3.5 rounded-xl text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all"
+                            onClick={closeMobile}
+                        >
+                            Blog
+                        </Link>
 
                         {/* Dynamic header items mobile */}
                         {headerItems.map((item) =>
