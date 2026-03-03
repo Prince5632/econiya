@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 const RfqModal = dynamic(() => import('./RfqModal'), { ssr: false });
@@ -33,20 +33,48 @@ const DEFAULT_RFQ_FORM: RfqFormConfig = {
 export default function ProductHeroClient({ productName, rfqForm, description, content, categoryName }: ProductHeroClientProps) {
     const [showRfq, setShowRfq] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [showReadMore, setShowReadMore] = useState(false);
+
+    const descRef = useRef<HTMLParagraphElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const hasContent = content && content.trim().length > 0;
-    const hasDescription = description && description.trim().length > 0;
+    const hasContent = !!(content && content.trim().length > 0);
+    const hasDescription = !!(description && description.trim().length > 0);
 
     // Use custom RFQ form if available, otherwise use the default
     const activeRfqForm = rfqForm || DEFAULT_RFQ_FORM;
 
+    useEffect(() => {
+        // If there is rich HTML content, we always need a Read More button
+        if (hasContent) {
+            setShowReadMore(true);
+            return;
+        }
+
+        const currentDesc = descRef.current;
+        if (!currentDesc) return;
+
+        const checkTruncation = () => {
+            if (!expanded) {
+                const isTruncated = currentDesc.scrollHeight > currentDesc.clientHeight;
+                setShowReadMore(isTruncated);
+            }
+        };
+
+        checkTruncation();
+
+        const observer = new ResizeObserver(() => checkTruncation());
+        observer.observe(currentDesc);
+
+        return () => observer.disconnect();
+    }, [description, hasContent, expanded]);
+
     return (
         <>
-            {/* Description — shows 4 lines clamped, expandable */}
+            {/* Description — shows clamped lines, expandable */}
             {hasDescription && (
                 <div className="product-hero-description">
-                    <p className={`product-hero-desc-text ${expanded ? 'expanded' : ''}`}>
+                    <p ref={descRef} className={`product-hero-desc-text ${expanded ? 'expanded' : ''}`}>
                         {description}
                     </p>
                 </div>
@@ -63,7 +91,7 @@ export default function ProductHeroClient({ productName, rfqForm, description, c
             )}
 
             {/* Read More / Show Less toggle */}
-            {(hasDescription || hasContent) && (
+            {showReadMore && (
                 <button
                     className="product-readmore"
                     onClick={() => setExpanded(!expanded)}

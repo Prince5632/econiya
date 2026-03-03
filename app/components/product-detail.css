@@ -382,7 +382,7 @@
     font-weight: 400;
     letter-spacing: 0.005em;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     transition: all 0.35s ease;

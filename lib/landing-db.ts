@@ -22,10 +22,19 @@ export const getGlobalSettings = cache(async () => {
                 : settings.socialLinks as any[];
         }
 
+        let footerLinks: any[] = [];
+        if (settings.footerLinks) {
+            footerLinks = typeof settings.footerLinks === 'string'
+                ? JSON.parse(settings.footerLinks)
+                : settings.footerLinks as any[];
+        }
+
         return {
             footer: {
-                copyrightText: settings.copyrightText || '© 2024 Econiya Technologies. All rights reserved.',
+                copyrightText: settings.copyrightText || '© 2026 Econiya Technologies. All rights reserved.',
                 socialLinks,
+                footerLinks,
+                footerContent: settings.footerContent || null,
             },
             contactInfo: {
                 email: settings.footerContent || 'contact@econiya.com',
@@ -35,7 +44,7 @@ export const getGlobalSettings = cache(async () => {
         };
     } catch {
         return {
-            footer: { copyrightText: '© 2024 Econiya Technologies. All rights reserved.', socialLinks: [] },
+            footer: { copyrightText: '© 2026 Econiya Technologies. All rights reserved.', socialLinks: [], footerLinks: [], footerContent: null },
             contactInfo: { email: 'contact@econiya.com', phone: '', address: '' },
         };
     }
