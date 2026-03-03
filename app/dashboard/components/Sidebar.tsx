@@ -13,6 +13,7 @@ import {
     HiOutlineHome,
     HiOutlineXMark,
     HiOutlineBars3,
+    HiOutlineChatBubbleBottomCenterText,
 } from 'react-icons/hi2';
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
     { label: 'Categories', href: '/dashboard/categories', icon: HiOutlineFolder },
     { label: 'Products', href: '/dashboard/products', icon: HiOutlineCube },
     { label: 'RFQ Forms', href: '/dashboard/rfq-forms', icon: HiOutlineClipboardDocumentList },
+    { label: 'Quote Requests', href: '/dashboard/quote-requests', icon: HiOutlineChatBubbleBottomCenterText },
     { label: 'Blogs', href: '/dashboard/blogs', icon: HiOutlinePencilSquare },
     { label: 'Media', href: '/dashboard/media', icon: HiOutlinePhoto },
     { label: 'Settings', href: '/dashboard/settings', icon: HiOutlineCog6Tooth },
