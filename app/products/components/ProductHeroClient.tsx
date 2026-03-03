@@ -1,10 +1,9 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 const RfqModal = dynamic(() => import('./RfqModal'), { ssr: false });
-const GetQuoteModal = dynamic(() => import('@/app/components/GetQuoteModal'), { ssr: false });
 
 interface RfqFormConfig {
     id: string;
@@ -21,26 +20,26 @@ interface ProductHeroClientProps {
     categoryName?: string;
 }
 
+// Default RFQ form used when no custom form is attached to the product
+const DEFAULT_RFQ_FORM: RfqFormConfig = {
+    id: '',
+    name: 'Quote Request',
+    fields: [
+        { name: 'quantity', label: 'Quantity', type: 'text', required: false },
+        { name: 'requirements', label: 'Requirements / Message', type: 'textarea', required: false },
+    ],
+};
+
 export default function ProductHeroClient({ productName, rfqForm, description, content, categoryName }: ProductHeroClientProps) {
     const [showRfq, setShowRfq] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
-    const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
     const hasContent = content && content.trim().length > 0;
     const hasDescription = description && description.trim().length > 0;
 
-    // Fetch categories for the fallback GetQuoteModal (only when no rfqForm)
-    useEffect(() => {
-        if (!rfqForm) {
-            fetch('/api/categories')
-                .then(r => r.json())
-                .then((data) => {
-                    if (Array.isArray(data)) setCategories(data);
-                })
-                .catch(() => { });
-        }
-    }, [rfqForm]);
+    // Use custom RFQ form if available, otherwise use the default
+    const activeRfqForm = rfqForm || DEFAULT_RFQ_FORM;
 
     return (
         <>
@@ -84,24 +83,14 @@ export default function ProductHeroClient({ productName, rfqForm, description, c
                 Request Quote
             </button>
 
-            {/* Product-specific RFQ Modal (when rfqForm is set) */}
-            {rfqForm ? (
-                <RfqModal
-                    rfqForm={rfqForm}
-                    productName={productName}
-                    isOpen={showRfq}
-                    onClose={() => setShowRfq(false)}
-                />
-            ) : (
-                /* General Quote Modal fallback (when no rfqForm) */
-                <GetQuoteModal
-                    isOpen={showRfq}
-                    onClose={() => setShowRfq(false)}
-                    categories={categories}
-                    defaultCategory={categoryName}
-                    productName={productName}
-                />
-            )}
+            <RfqModal
+                rfqForm={activeRfqForm}
+                productName={productName}
+                categoryName={categoryName}
+                isOpen={showRfq}
+                onClose={() => setShowRfq(false)}
+            />
         </>
     );
 }
+

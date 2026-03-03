@@ -20,13 +20,14 @@ interface RfqFormConfig {
 interface RfqModalProps {
     rfqForm: RfqFormConfig;
     productName: string;
+    categoryName?: string;
     isOpen: boolean;
     onClose: () => void;
 }
 
 type SubmitState = 'idle' | 'submitting' | 'success' | 'error';
 
-export default function RfqModal({ rfqForm, productName, isOpen, onClose }: RfqModalProps) {
+export default function RfqModal({ rfqForm, productName, categoryName, isOpen, onClose }: RfqModalProps) {
     const [submitState, setSubmitState] = useState<SubmitState>('idle');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -62,21 +63,42 @@ export default function RfqModal({ rfqForm, productName, isOpen, onClose }: RfqM
         setErrorMessage('');
 
         try {
-            const res = await fetch('/api/rfq-submissions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    formId: rfqForm.id,
-                    name: contact.name,
-                    email: contact.email,
-                    phone: contact.phone || null,
-                    company: contact.company || null,
-                    formData: {
-                        ...formData,
-                        _productName: productName,
-                    },
-                }),
-            });
+            let res: Response;
+
+            if (rfqForm.id) {
+                // Custom RFQ form — submit to rfq-submissions
+                // Extract name/email from the dynamic form fields
+                res = await fetch('/api/rfq-submissions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        formId: rfqForm.id,
+                        name: formData.name || formData.full_name || 'N/A',
+                        email: formData.email || 'N/A',
+                        phone: formData.phone || null,
+                        company: formData.company || null,
+                        formData: {
+                            ...formData,
+                            _productName: productName,
+                        },
+                    }),
+                });
+            } else {
+                // Default form — submit to quote-requests with product info
+                res = await fetch('/api/quote-requests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: contact.name,
+                        email: contact.email,
+                        phone: contact.phone || null,
+                        company: contact.company || null,
+                        category: categoryName || 'General',
+                        productName: productName,
+                        message: formData.requirements || formData.message || null,
+                    }),
+                });
+            }
 
             if (res.ok) {
                 setSubmitState('success');
@@ -137,55 +159,57 @@ export default function RfqModal({ rfqForm, productName, isOpen, onClose }: RfqM
                             <div className="rfq-error-msg">{errorMessage}</div>
                         )}
 
-                        {/* Contact Info Section */}
-                        <div className="rfq-form-section">
-                            <h4 className="rfq-form-section-title">Contact Information</h4>
-                            <div className="rfq-form-grid">
-                                <div className="rfq-form-field">
-                                    <label>Full Name <span className="rfq-required">*</span></label>
-                                    <input
-                                        type="text"
-                                        value={contact.name}
-                                        onChange={e => updateContact('name', e.target.value)}
-                                        required
-                                        placeholder="Your full name"
-                                    />
-                                </div>
-                                <div className="rfq-form-field">
-                                    <label>Email Address <span className="rfq-required">*</span></label>
-                                    <input
-                                        type="email"
-                                        value={contact.email}
-                                        onChange={e => updateContact('email', e.target.value)}
-                                        required
-                                        placeholder="you@company.com"
-                                    />
-                                </div>
-                                <div className="rfq-form-field">
-                                    <label>Phone Number</label>
-                                    <input
-                                        type="tel"
-                                        value={contact.phone}
-                                        onChange={e => updateContact('phone', e.target.value)}
-                                        placeholder="+1 (555) 000-0000"
-                                    />
-                                </div>
-                                <div className="rfq-form-field">
-                                    <label>Company</label>
-                                    <input
-                                        type="text"
-                                        value={contact.company}
-                                        onChange={e => updateContact('company', e.target.value)}
-                                        placeholder="Your company name"
-                                    />
+                        {/* Contact Info Section — only for default form (no custom RFQ) */}
+                        {!rfqForm.id && (
+                            <div className="rfq-form-section">
+                                <h4 className="rfq-form-section-title">Contact Information</h4>
+                                <div className="rfq-form-grid">
+                                    <div className="rfq-form-field">
+                                        <label>Full Name <span className="rfq-required">*</span></label>
+                                        <input
+                                            type="text"
+                                            value={contact.name}
+                                            onChange={e => updateContact('name', e.target.value)}
+                                            required
+                                            placeholder="Your full name"
+                                        />
+                                    </div>
+                                    <div className="rfq-form-field">
+                                        <label>Email Address <span className="rfq-required">*</span></label>
+                                        <input
+                                            type="email"
+                                            value={contact.email}
+                                            onChange={e => updateContact('email', e.target.value)}
+                                            required
+                                            placeholder="you@company.com"
+                                        />
+                                    </div>
+                                    <div className="rfq-form-field">
+                                        <label>Phone Number</label>
+                                        <input
+                                            type="tel"
+                                            value={contact.phone}
+                                            onChange={e => updateContact('phone', e.target.value)}
+                                            placeholder="+1 (555) 000-0000"
+                                        />
+                                    </div>
+                                    <div className="rfq-form-field">
+                                        <label>Company</label>
+                                        <input
+                                            type="text"
+                                            value={contact.company}
+                                            onChange={e => updateContact('company', e.target.value)}
+                                            placeholder="Your company name"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Dynamic Fields Section */}
                         {fields.length > 0 && (
                             <div className="rfq-form-section">
-                                <h4 className="rfq-form-section-title">Quote Details</h4>
+                                {!rfqForm.id && <h4 className="rfq-form-section-title">Quote Details</h4>}
                                 <div className="rfq-form-grid">
                                     {fields.map((field, idx) => (
                                         <div key={idx} className={`rfq-form-field ${field.type === 'textarea' ? 'rfq-field-full' : ''}`}>
