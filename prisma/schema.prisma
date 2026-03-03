@@ -238,16 +238,17 @@ model RfqSubmission {
 // ─── Quote Requests (General) ───────────────────────────────────────────────────
 
 model QuoteRequest {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  company   String?
-  category  String
-  message   String?  @db.Text
-  status    String   @default("new")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  category    String
+  productName String?
+  message     String?  @db.Text
+  status      String   @default("new")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("quote_requests")
 }

@@ -10,6 +10,7 @@ interface QuoteRequest {
     phone: string | null;
     company: string | null;
     category: string;
+    productName: string | null;
     message: string | null;
     status: string;
     createdAt: string;
@@ -113,7 +114,7 @@ export default function QuoteRequestsPage() {
                             <thead>
                                 <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
                                     <th className="px-4 py-3 text-left font-medium text-zinc-500">Name</th>
-                                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Email</th>
+                                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Product</th>
                                     <th className="px-4 py-3 text-left font-medium text-zinc-500">Category</th>
                                     <th className="px-4 py-3 text-left font-medium text-zinc-500">Status</th>
                                     <th className="px-4 py-3 text-left font-medium text-zinc-500">Date</th>
@@ -121,7 +122,7 @@ export default function QuoteRequestsPage() {
                             </thead>
                             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                                 {filtered.length === 0 ? (
-                                    <tr><td colSpan={5} className="px-4 py-12 text-center text-zinc-400">No quote requests yet.</td></tr>
+                                    <tr><td colSpan={6} className="px-4 py-12 text-center text-zinc-400">No quote requests yet.</td></tr>
                                 ) : filtered.map(req => (
                                     <tr
                                         key={req.id}
@@ -129,7 +130,7 @@ export default function QuoteRequestsPage() {
                                         className={`cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors ${selected?.id === req.id ? 'bg-indigo-50 dark:bg-indigo-500/5' : ''}`}
                                     >
                                         <td className="px-4 py-3 font-medium text-zinc-900 dark:text-white">{req.name}</td>
-                                        <td className="px-4 py-3 text-zinc-500">{req.email}</td>
+                                        <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{req.productName || <span className="text-zinc-300 dark:text-zinc-600">—</span>}</td>
                                         <td className="px-4 py-3">
                                             <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-500/10 dark:text-gray-400">
                                                 {req.category}
@@ -180,6 +181,12 @@ export default function QuoteRequestsPage() {
                                     <p className="text-xs text-zinc-400">Category</p>
                                     <p className="text-sm font-medium text-zinc-900 dark:text-white">{selected.category}</p>
                                 </div>
+                                {selected.productName && (
+                                    <div>
+                                        <p className="text-xs text-zinc-400">Product</p>
+                                        <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{selected.productName}</p>
+                                    </div>
+                                )}
                                 {selected.message && (
                                     <div>
                                         <p className="text-xs text-zinc-400">Message</p>

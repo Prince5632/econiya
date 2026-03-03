@@ -37,12 +37,14 @@ export async function POST(request: NextRequest) {
                 phone: body.phone || null,
                 company: body.company || null,
                 category: body.category,
+                productName: body.productName || null,
                 message: body.message || null,
                 status: 'new',
             },
         });
         return NextResponse.json(quoteRequest, { status: 201 });
     } catch (error) {
+        console.error('Quote request submission error:', error);
         return NextResponse.json({ error: 'Failed to submit quote request' }, { status: 500 });
     }
 }

@@ -6,11 +6,13 @@ interface GetQuoteModalProps {
     isOpen: boolean;
     onClose: () => void;
     categories: { id: string; name: string }[];
+    defaultCategory?: string;
+    productName?: string;
 }
 
 type SubmitState = 'idle' | 'submitting' | 'success' | 'error';
 
-export default function GetQuoteModal({ isOpen, onClose, categories }: GetQuoteModalProps) {
+export default function GetQuoteModal({ isOpen, onClose, categories, defaultCategory, productName }: GetQuoteModalProps) {
     const [submitState, setSubmitState] = useState<SubmitState>('idle');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -19,7 +21,7 @@ export default function GetQuoteModal({ isOpen, onClose, categories }: GetQuoteM
         email: '',
         phone: '',
         company: '',
-        category: '',
+        category: defaultCategory || '',
         message: '',
     });
 
@@ -58,6 +60,7 @@ export default function GetQuoteModal({ isOpen, onClose, categories }: GetQuoteM
                     phone: form.phone || null,
                     company: form.company || null,
                     category: form.category,
+                    productName: productName || null,
                     message: form.message || null,
                 }),
             });
@@ -89,7 +92,7 @@ export default function GetQuoteModal({ isOpen, onClose, categories }: GetQuoteM
                 <div className="gq-modal-header">
                     <div>
                         <h2 className="gq-modal-title">Get a Quote</h2>
-                        <p className="gq-modal-subtitle">Tell us about your requirements and we&apos;ll get back to you</p>
+                        <p className="gq-modal-subtitle">{productName ? `for ${productName}` : "Tell us about your requirements and we'll get back to you"}</p>
                     </div>
                     <button onClick={handleClose} className="gq-modal-close" aria-label="Close">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

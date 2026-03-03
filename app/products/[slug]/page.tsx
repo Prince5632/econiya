@@ -232,6 +232,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                                     rfqForm={product.rfqForm as any}
                                     description={product.description}
                                     content={product.content}
+                                    categoryName={categoryName}
                                 />
                             </div>
                         </div>
