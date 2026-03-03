@@ -5,6 +5,7 @@ import { auth } from '@/auth';
 import { cache } from 'react';
 import NavbarServer from '@/app/components/NavbarServer';
 import Footer from '@/app/components/Footer';
+import CustomPageClient from '@/app/components/CustomPageClient';
 
 // Use React cache to avoid duplicate DB calls between generateMetadata and the component
 const getPage = cache(async (slug: string) => {
@@ -93,19 +94,11 @@ export default async function PublicPageView({ params }: PageProps) {
                     {page.cssContent && (
                         <style dangerouslySetInnerHTML={{ __html: page.cssContent }} />
                     )}
-                    {/* Custom HTML */}
-                    {page.htmlContent && (
-                        <div
-                            className="custom-page-content"
-                            dangerouslySetInnerHTML={{ __html: page.htmlContent }}
-                        />
-                    )}
-                    {/* Custom JS */}
-                    {page.jsContent && (
-                        <script
-                            dangerouslySetInnerHTML={{ __html: page.jsContent }}
-                        />
-                    )}
+
+                    <CustomPageClient
+                        htmlContent={page.htmlContent}
+                        jsContent={page.jsContent}
+                    />
                 </main>
                 <Footer />
             </>
